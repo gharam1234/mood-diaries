@@ -1,3 +1,4 @@
+"use client"
 import React, { forwardRef } from 'react';
 import styles from './styles.module.css';
 

@@ -65,9 +65,9 @@
 
 /* 활성 페이지 버튼 */
 .pageButton--active {
-  background-color: #f2f2f2 !important;
-  color: #000000 !important;
-  font-weight: 500 !important;
+  background-color: #f2f2f2;
+  color: #000000;
+  font-weight: 500;
 }
 
 /* 네비게이션 버튼들 (이전/다음/첫번째/마지막) */
@@ -201,9 +201,9 @@
 }
 
 .pagination--primary .pageButton--active {
-  background-color: #f2f2f2 !important;
-  color: #000000 !important;
-  border-color: #dee2e6 !important;
+  background-color: #f2f2f2;
+  color: #000000;
+  border-color: #dee2e6;
 }
 
 /* Secondary Variant */
@@ -220,9 +220,9 @@
 }
 
 .pagination--secondary .pageButton--active {
-  background-color: #2563eb !important;
-  color: #ffffff !important;
-  border-color: #2563eb !important;
+  background-color: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
 }
 
 /* Tertiary Variant */
@@ -238,9 +238,9 @@
 }
 
 .pagination--tertiary .pageButton--active {
-  background-color: transparent !important;
-  color: #2563eb !important;
-  border-color: #2563eb !important;
+  background-color: transparent;
+  color: #2563eb;
+  border-color: #2563eb;
 }
 
 /* ===========================================
@@ -281,9 +281,9 @@
 }
 
 .pagination--dark .pageButton--active {
-  background-color: #1f2937 !important;
-  color: #ffffff !important;
-  border-color: #374151 !important;
+  background-color: #1f2937;
+  color: #ffffff;
+  border-color: #374151;
 }
 
 .pagination--dark .pageButton__prev,
@@ -312,9 +312,9 @@
 }
 
 .pagination--dark.pagination--secondary .pageButton--active {
-  background-color: #3b82f6 !important;
-  color: #ffffff !important;
-  border-color: #3b82f6 !important;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
 }
 
 .pagination--dark.pagination--tertiary .pageButton__number {
@@ -323,8 +323,8 @@
 }
 
 .pagination--dark.pagination--tertiary .pageButton--active {
-  color: #60a5fa !important;
-  border-color: #60a5fa !important;
+  color: #60a5fa;
+  border-color: #60a5fa;
 }
 
 /* ===========================================
@@ -371,7 +371,7 @@
   }
   
   .pageButton--active {
-    border-width: 3px !important;
+    border-width: 3px;
   }
 }
 

@@ -89,20 +89,20 @@
 /* Secondary Variant */
 .button--secondary.button--light {
   background-color: #FFFFFF;
-  color: #12B75F;
-  border-color: #12B75F;
+  color: #1C1C1C; /* gray 90 */
+  border-color: #1C1C1C; /* gray 90 */
 }
 
 .button--secondary.button--light:hover:not(:disabled) {
   background-color: #F2F2F2; /* gray05 */
-  color: #109C51;
-  border-color: #109C51;
+  color: #333333; /* gray 80 */
+  border-color: #333333; /* gray 80 */
 }
 
 .button--secondary.button--light:active:not(:disabled) {
   background-color: #E4E4E4; /* gray10 */
-  color: #0E723C;
-  border-color: #0E723C;
+  color: #000000; /* black */
+  border-color: #000000; /* black */
 }
 
 .button--secondary.button--dark {
@@ -168,7 +168,7 @@
   gap: 4px;
 }
 
-/* Medium Size (기본값) */
+/* Medium Size (기본값) - min-width 제거됨 (요구사항 반영) */
 .button--medium {
   min-height: 48px;
   padding: 0 12px;
@@ -176,6 +176,7 @@
   line-height: 24px;
   letter-spacing: -0.18px;
   gap: 6px;
+  /* min-width 없음 - 콘텐츠에 따라 너비 자동 조정 */
 }
 
 /* Large Size */

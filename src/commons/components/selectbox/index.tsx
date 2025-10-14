@@ -1,3 +1,5 @@
+"use client"
+
 import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import styles from './styles.module.css';
 

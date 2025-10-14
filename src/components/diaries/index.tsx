@@ -5,6 +5,7 @@ import styles from './styles.module.css';
 import { SelectBox } from '../../commons/components/selectbox';
 import { SearchBar as Searchbar } from '../../commons/components/searchbar';
 import { Button } from '../../commons/components/button';
+import { Pagination } from '../../commons/components/pagination';
 import Image from 'next/image';
 import { EmotionType, getEmotionData } from '../../commons/constants/enum';
 
@@ -162,6 +163,10 @@ const DiaryCard: React.FC<{ diary: DiaryData }> = ({ diary }) => {
  * 와이어프레임 구조: gap -> search -> gap -> main -> gap -> pagination -> gap
  */
 export const Diaries: React.FC = () => {
+  // 페이지네이션 상태
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const totalPages = 5; // 총 페이지 수 (예시)
+
   // 필터 옵션 정의
   const filterOptions = [
     { value: 'all', label: '전체' },
@@ -185,6 +190,12 @@ export const Diaries: React.FC = () => {
   // 일기쓰기 버튼 클릭 핸들러
   const handleWriteDiary = () => {
     console.log('일기쓰기 클릭');
+  };
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    console.log('페이지 변경:', page);
   };
 
   return (
@@ -263,7 +274,18 @@ export const Diaries: React.FC = () => {
       
       {/* Pagination 영역: 1168 * 32 */}
       <section className={styles.pagination}>
-        <div className={styles.paginationPlaceholder}>페이지네이션 영역</div>
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          variant="primary"
+          theme="light"
+          size="medium"
+          maxVisiblePages={5}
+          showPrevNext={true}
+          showFirstLast={false}
+          className={styles.paginationWidth}
+        />
       </section>
       
       {/* Gap 4: 1168 * 40 */}
