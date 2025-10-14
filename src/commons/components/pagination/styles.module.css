@@ -1,0 +1,391 @@
+/* ===========================================
+   Pagination 컴포넌트 스타일
+   Figma 디자인 기반 완전한 variant 시스템
+   =========================================== */
+
+/* 기본 Pagination 컨테이너 */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  font-family: 'Pretendard Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  user-select: none;
+}
+
+/* 페이지 번호 그룹 */
+.pageNumbers {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+/* 기본 페이지 버튼 스타일 */
+.pageButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  text-decoration: none;
+  position: relative;
+  outline: none;
+}
+
+.pageButton:focus-visible {
+  outline: 2px solid var(--focus-color, #2563eb);
+  outline-offset: 2px;
+}
+
+.pageButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+/* 페이지 번호 버튼 */
+.pageButton__number {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: -0.16px;
+  background-color: #ffffff;
+  color: #777777;
+  border: 1px solid transparent;
+}
+
+.pageButton__number:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+/* 활성 페이지 버튼 */
+.pageButton--active {
+  background-color: #f2f2f2 !important;
+  color: #000000 !important;
+  font-weight: 500 !important;
+}
+
+/* 네비게이션 버튼들 (이전/다음/첫번째/마지막) */
+.pageButton__prev,
+.pageButton__next,
+.pageButton__first,
+.pageButton__last {
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  color: #777777;
+  border: none;
+  margin: 0 4px;
+}
+
+.pageButton__prev:hover:not(:disabled),
+.pageButton__next:hover:not(:disabled),
+.pageButton__first:hover:not(:disabled),
+.pageButton__last:hover:not(:disabled) {
+  color: #495057;
+}
+
+/* 아이콘 스타일 */
+.icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* 말줄임표 */
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  font-weight: 400;
+  color: #777777;
+  cursor: default;
+}
+
+/* ===========================================
+   SIZE VARIANTS - Figma 기반
+   =========================================== */
+
+/* Small Size */
+.pagination--small .pageButton__number {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+  line-height: 20px;
+  border-radius: 6px;
+}
+
+.pagination--small .pageButton__prev,
+.pagination--small .pageButton__next,
+.pagination--small .pageButton__first,
+.pagination--small .pageButton__last {
+  width: 20px;
+  height: 20px;
+}
+
+.pagination--small .ellipsis {
+  width: 24px;
+  height: 24px;
+  font-size: 14px;
+}
+
+/* Medium Size (기본값) */
+.pagination--medium .pageButton__number {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  line-height: 24px;
+  border-radius: 8px;
+}
+
+.pagination--medium .pageButton__prev,
+.pagination--medium .pageButton__next,
+.pagination--medium .pageButton__first,
+.pagination--medium .pageButton__last {
+  width: 24px;
+  height: 24px;
+}
+
+.pagination--medium .ellipsis {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+}
+
+/* Large Size */
+.pagination--large .pageButton__number {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  line-height: 28px;
+  border-radius: 10px;
+}
+
+.pagination--large .pageButton__prev,
+.pagination--large .pageButton__next,
+.pagination--large .pageButton__first,
+.pagination--large .pageButton__last {
+  width: 28px;
+  height: 28px;
+}
+
+.pagination--large .ellipsis {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+}
+
+/* ===========================================
+   VARIANT STYLES - Primary/Secondary/Tertiary
+   =========================================== */
+
+/* Primary Variant (기본값) */
+.pagination--primary .pageButton__number {
+  background-color: #ffffff;
+  color: #777777;
+  border: 1px solid #e9ecef;
+}
+
+.pagination--primary .pageButton__number:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  color: #495057;
+  border-color: #dee2e6;
+}
+
+.pagination--primary .pageButton--active {
+  background-color: #f2f2f2 !important;
+  color: #000000 !important;
+  border-color: #dee2e6 !important;
+}
+
+/* Secondary Variant */
+.pagination--secondary .pageButton__number {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  border: 1px solid #dee2e6;
+}
+
+.pagination--secondary .pageButton__number:hover:not(:disabled) {
+  background-color: #e9ecef;
+  color: #495057;
+  border-color: #ced4da;
+}
+
+.pagination--secondary .pageButton--active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+/* Tertiary Variant */
+.pagination--tertiary .pageButton__number {
+  background-color: transparent;
+  color: #6c757d;
+  border: 1px solid transparent;
+}
+
+.pagination--tertiary .pageButton__number:hover:not(:disabled) {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.pagination--tertiary .pageButton--active {
+  background-color: transparent !important;
+  color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* ===========================================
+   THEME VARIANTS - Light/Dark
+   =========================================== */
+
+/* Light Theme (기본값) */
+.pagination--light {
+  --focus-color: #2563eb;
+}
+
+.pagination--light .pageButton__prev,
+.pagination--light .pageButton__next,
+.pagination--light .pageButton__first,
+.pagination--light .pageButton__last {
+  color: #777777;
+}
+
+.pagination--light .ellipsis {
+  color: #777777;
+}
+
+/* Dark Theme */
+.pagination--dark {
+  --focus-color: #60a5fa;
+}
+
+.pagination--dark .pageButton__number {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+.pagination--dark .pageButton__number:hover:not(:disabled) {
+  background-color: #4b5563;
+  color: #f9fafb;
+  border-color: #6b7280;
+}
+
+.pagination--dark .pageButton--active {
+  background-color: #1f2937 !important;
+  color: #ffffff !important;
+  border-color: #374151 !important;
+}
+
+.pagination--dark .pageButton__prev,
+.pagination--dark .pageButton__next,
+.pagination--dark .pageButton__first,
+.pagination--dark .pageButton__last {
+  color: #d1d5db;
+}
+
+.pagination--dark .pageButton__prev:hover:not(:disabled),
+.pagination--dark .pageButton__next:hover:not(:disabled),
+.pagination--dark .pageButton__first:hover:not(:disabled),
+.pagination--dark .pageButton__last:hover:not(:disabled) {
+  color: #f9fafb;
+}
+
+.pagination--dark .ellipsis {
+  color: #d1d5db;
+}
+
+/* Dark Theme Variants */
+.pagination--dark.pagination--secondary .pageButton__number {
+  background-color: #4b5563;
+  color: #d1d5db;
+  border-color: #6b7280;
+}
+
+.pagination--dark.pagination--secondary .pageButton--active {
+  background-color: #3b82f6 !important;
+  color: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+.pagination--dark.pagination--tertiary .pageButton__number {
+  background-color: transparent;
+  color: #d1d5db;
+}
+
+.pagination--dark.pagination--tertiary .pageButton--active {
+  color: #60a5fa !important;
+  border-color: #60a5fa !important;
+}
+
+/* ===========================================
+   DISABLED STATE
+   =========================================== */
+
+.pagination--disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.pagination--disabled .pageButton {
+  cursor: not-allowed;
+}
+
+/* ===========================================
+   RESPONSIVE DESIGN
+   =========================================== */
+
+@media (max-width: 640px) {
+  .pagination {
+    gap: 2px;
+  }
+  
+  .pageButton__prev,
+  .pageButton__next {
+    margin: 0 2px;
+  }
+  
+  .pageButton__first,
+  .pageButton__last {
+    display: none;
+  }
+}
+
+/* ===========================================
+   ACCESSIBILITY ENHANCEMENTS
+   =========================================== */
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: high) {
+  .pageButton__number {
+    border-width: 2px;
+  }
+  
+  .pageButton--active {
+    border-width: 3px !important;
+  }
+}
+
+/* 움직임 줄이기 선호 시 애니메이션 제거 */
+@media (prefers-reduced-motion: reduce) {
+  .pageButton {
+    transition: none;
+  }
+}
+
+/* 포커스 표시 강화 */
+@media (prefers-contrast: high) {
+  .pageButton:focus-visible {
+    outline-width: 3px;
+    outline-offset: 1px;
+  }
+}

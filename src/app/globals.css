@@ -1,0 +1,349 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ====================================== */
+/* Color Palette Variables (Light Mode) */
+/* ====================================== */
+:root {
+  /* Blue Scale */
+  --color-blue-05: #F0F7FF;
+  --color-blue-10: #DBEEFF;
+  --color-blue-20: #BDDBFF;
+  --color-blue-30: #93BEFF;
+  --color-blue-40: #6DA5FA;
+  --color-blue-50: #497CFF;
+  --color-blue-60: #3A5CF3;
+  --color-blue-70: #274AE1;
+  --color-blue-80: #1530A6;
+  --color-blue-90: #0B2184;
+
+  /* Gray Scale */
+  --color-gray-white: #FFFFFF;
+  --color-gray-05: #F2F2F2;
+  --color-gray-10: #E4E4E4;
+  --color-gray-20: #D4D3D3;
+  --color-gray-30: #C7C7C7;
+  --color-gray-40: #ABABAB;
+  --color-gray-50: #919191;
+  --color-gray-60: #777777;
+  --color-gray-70: #5F5F5F;
+  --color-gray-80: #333333;
+  --color-gray-90: #1C1C1C;
+  --color-gray-black: #000000;
+
+  /* Red Scale */
+  --color-red-05: #FDD7DC;
+  --color-red-10: #F797A4;
+  --color-red-20: #F4677A;
+  --color-red-30: #F03851;
+  --color-red-40: #E4112E;
+  --color-red-50: #B40E24;
+  --color-red-60: #850A1B;
+
+  /* Green Scale */
+  --color-green-05: #D3F3E0;
+  --color-green-10: #92E6B9;
+  --color-green-20: #15D66F;
+  --color-green-30: #12B75F;
+  --color-green-40: #109C51;
+  --color-green-50: #0E723C;
+  --color-green-60: #084424;
+
+  /* Yellow Scale */
+  --color-yellow-05: #FFE499;
+  --color-yellow-10: #FFD666;
+  --color-yellow-20: #FFC933;
+  --color-yellow-30: #FFB300;
+  --color-yellow-40: #EBA500;
+  --color-yellow-50: #D69600;
+  --color-yellow-60: #B27D00;
+
+  /* Cool Gray Scale */
+  --color-cool-gray-01: #F8F8FA;
+  --color-cool-gray-05: #F6F6F9;
+  --color-cool-gray-10: #EDEEF2;
+  --color-cool-gray-20: #DDDFE5;
+  --color-cool-gray-30: #D2D4DD;
+  --color-cool-gray-40: #C7C9D5;
+  --color-cool-gray-50: #BBBECD;
+  --color-cool-gray-60: #B0B3C4;
+
+  /* ====================================== */
+  /* Semantic Color Tokens (Light Mode)    */
+  /* ====================================== */
+  
+  /* Primary Colors */
+  --color-primary: var(--color-green-30);
+  --color-secondary: var(--color-yellow-30);
+
+  /* Background Colors */
+  --color-background-primary: var(--color-gray-white);
+  --color-background-secondary: var(--color-gray-05);
+  --color-background-tertiary: var(--color-cool-gray-05);
+  --color-background-accent: var(--color-blue-05);
+
+  /* Text Colors */
+  --color-text-primary: var(--color-gray-black);
+  --color-text-secondary: var(--color-gray-60);
+  --color-text-tertiary: var(--color-gray-50);
+  --color-text-disabled: var(--color-gray-40);
+  --color-text-inverse: var(--color-gray-white);
+
+  /* Border Colors */
+  --color-border-primary: var(--color-gray-20);
+  --color-border-secondary: var(--color-gray-10);
+  --color-border-tertiary: var(--color-cool-gray-20);
+
+  /* Status Colors */
+  --color-status-success: var(--color-green-30);
+  --color-status-error: var(--color-red-30);
+  --color-status-warning: var(--color-yellow-30);
+  --color-status-info: var(--color-blue-60);
+
+  /* Interactive Colors */
+  --color-interactive-primary: var(--color-blue-60);
+  --color-interactive-primary-hover: var(--color-blue-70);
+  --color-interactive-primary-active: var(--color-blue-80);
+  --color-interactive-secondary: var(--color-blue-40);
+  --color-interactive-disabled: var(--color-gray-30);
+
+  /* Next.js Default Variables */
+  --background: var(--color-background-primary);
+  --foreground: var(--color-text-primary);
+
+  /* Gradients (Primary Gradient 추가 231107) */
+  --color-gradient-primary: linear-gradient(135deg, #6DA5FA 0%, #92EAF5 100%);
+  --color-gradient-skeleton: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.6) 50%, transparent 100%);
+
+  /* ====================================== */
+  /* Typography Variables                   */
+  /* ====================================== */
+
+  /* 폰트 패밀리 정의 */
+  --font-family-korean: 'Pretendard', sans-serif;
+  --font-family-english: 'SUIT Variable', sans-serif;
+  --font-family-default: var(--font-family-korean);
+
+  /* 폰트 두께 정의 */
+  --font-weight-extraBold: 800;
+  --font-weight-bold: 700;
+  --font-weight-semiBold: 600;
+  --font-weight-medium: 500;
+  --font-weight-regular: 400;
+
+  /* 웹 헤드라인 (데스크톱 기준) */
+  --typography-webHeadline01-fontSize: 48px;
+  --typography-webHeadline01-lineHeight: 60px;
+  --typography-webHeadline01-fontWeight: var(--font-weight-semiBold);
+
+  --typography-webHeadline02-fontSize: 36px;
+  --typography-webHeadline02-lineHeight: 48px;
+  --typography-webHeadline02-fontWeight: var(--font-weight-semiBold);
+
+  --typography-webHeadline03-fontSize: 28px;
+  --typography-webHeadline03-lineHeight: 36px;
+  --typography-webHeadline03-fontWeight: var(--font-weight-semiBold);
+
+  /* 헤드라인 */
+  --typography-headline01-fontSize: 24px;
+  --typography-headline01-lineHeight: 32px;
+  --typography-headline01-fontWeight: var(--font-weight-bold);
+
+  --typography-headline02-fontSize: 22px;
+  --typography-headline02-lineHeight: 30px;
+  --typography-headline02-fontWeight: var(--font-weight-extraBold);
+
+  --typography-headline03-fontSize: 20px;
+  --typography-headline03-lineHeight: 28px;
+  --typography-headline03-fontWeight: var(--font-weight-bold);
+
+  /* 타이틀 */
+  --typography-title01-fontSize: 18px;
+  --typography-title01-lineHeight: 24px;
+  --typography-title01-fontWeight: var(--font-weight-bold);
+
+  --typography-title02-fontSize: 16px;
+  --typography-title02-lineHeight: 22px;
+  --typography-title02-fontWeight: var(--font-weight-bold);
+
+  --typography-title03-fontSize: 14px;
+  --typography-title03-lineHeight: 20px;
+  --typography-title03-fontWeight: var(--font-weight-bold);
+
+  /* 서브 타이틀 */
+  --typography-subTitle01-fontSize: 14px;
+  --typography-subTitle01-lineHeight: 22px;
+  --typography-subTitle01-fontWeight: var(--font-weight-semiBold);
+
+  --typography-subTitle02-fontSize: 12px;
+  --typography-subTitle02-lineHeight: 18px;
+  --typography-subTitle02-fontWeight: var(--font-weight-semiBold);
+
+  /* 본문 */
+  --typography-body01-fontSize: 16px;
+  --typography-body01-lineHeight: 24px;
+  --typography-body01-fontWeight: var(--font-weight-medium);
+
+  --typography-body02_m-fontSize: 14px;
+  --typography-body02_m-lineHeight: 22px;
+  --typography-body02_m-fontWeight: var(--font-weight-medium);
+
+  --typography-body03-fontSize: 12px;
+  --typography-body03-lineHeight: 18px;
+  --typography-body03-fontWeight: var(--font-weight-medium);
+
+  --typography-body01_regular-fontSize: 16px;
+  --typography-body01_regular-lineHeight: 22px;
+  --typography-body01_regular-fontWeight: var(--font-weight-regular);
+
+  --typography-body02_s_regular-fontSize: 14px;
+  --typography-body02_s_regular-lineHeight: 20px;
+  --typography-body02_s_regular-fontWeight: var(--font-weight-regular);
+
+  --typography-body03_regular-fontSize: 12px;
+  --typography-body03_regular-lineHeight: 16px;
+  --typography-body03_regular-fontWeight: var(--font-weight-regular);
+
+  /* 캡션 */
+  --typography-caption01-fontSize: 12px;
+  --typography-caption01-lineHeight: 14px;
+  --typography-caption01-fontWeight: var(--font-weight-semiBold);
+
+  --typography-caption02_m-fontSize: 10px;
+  --typography-caption02_m-lineHeight: 12px;
+  --typography-caption02_m-fontWeight: var(--font-weight-semiBold);
+
+  --typography-caption02_s-fontSize: 10px;
+  --typography-caption02_s-lineHeight: 12px;
+  --typography-caption02_s-fontWeight: var(--font-weight-medium);
+
+  --typography-caption03-fontSize: 8px;
+  --typography-caption03-lineHeight: 10px;
+  --typography-caption03-fontWeight: var(--font-weight-semiBold);
+}
+
+/* ====================================== */
+/* Dark Mode Color Overrides             */
+/* ====================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Primary Colors */
+    --color-primary: var(--color-green-20);
+    --color-secondary: var(--color-yellow-30);
+
+    /* Background Colors */
+    --color-background-primary: var(--color-gray-black);
+    --color-background-secondary: var(--color-gray-90);
+    --color-background-tertiary: var(--color-gray-80);
+    --color-background-accent: var(--color-blue-90);
+
+    /* Text Colors */
+    --color-text-primary: var(--color-gray-white);
+    --color-text-secondary: var(--color-gray-30);
+    --color-text-tertiary: var(--color-gray-40);
+    --color-text-disabled: var(--color-gray-60);
+    --color-text-inverse: var(--color-gray-black);
+
+    /* Border Colors */
+    --color-border-primary: var(--color-gray-70);
+    --color-border-secondary: var(--color-gray-80);
+    --color-border-tertiary: var(--color-gray-90);
+
+    /* Status Colors */
+    --color-status-success: var(--color-green-20);
+    --color-status-error: var(--color-red-20);
+    --color-status-warning: var(--color-yellow-20);
+    --color-status-info: var(--color-blue-40);
+
+    /* Interactive Colors */
+    --color-interactive-primary: var(--color-blue-40);
+    --color-interactive-primary-hover: var(--color-blue-30);
+    --color-interactive-primary-active: var(--color-blue-20);
+    --color-interactive-secondary: var(--color-blue-50);
+    --color-interactive-disabled: var(--color-gray-70);
+
+    /* Next.js Default Variables */
+    --background: var(--color-background-primary);
+    --foreground: var(--color-text-primary);
+
+    /* Gradients */
+    --color-gradient-skeleton: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+  }
+}
+
+/* Manual Dark Mode Toggle (data-theme attribute) */
+[data-theme='dark'] {
+  /* Primary Colors */
+  --color-primary: var(--color-green-20);
+  --color-secondary: var(--color-yellow-30);
+
+  /* Background Colors */
+  --color-background-primary: var(--color-gray-black);
+  --color-background-secondary: var(--color-gray-90);
+  --color-background-tertiary: var(--color-gray-80);
+  --color-background-accent: var(--color-blue-90);
+
+  /* Text Colors */
+  --color-text-primary: var(--color-gray-white);
+  --color-text-secondary: var(--color-gray-30);
+  --color-text-tertiary: var(--color-gray-40);
+  --color-text-disabled: var(--color-gray-60);
+  --color-text-inverse: var(--color-gray-black);
+
+  /* Border Colors */
+  --color-border-primary: var(--color-gray-70);
+  --color-border-secondary: var(--color-gray-80);
+  --color-border-tertiary: var(--color-gray-90);
+
+  /* Status Colors */
+  --color-status-success: var(--color-green-20);
+  --color-status-error: var(--color-red-20);
+  --color-status-warning: var(--color-yellow-20);
+  --color-status-info: var(--color-blue-40);
+
+  /* Interactive Colors */
+  --color-interactive-primary: var(--color-blue-40);
+  --color-interactive-primary-hover: var(--color-blue-30);
+  --color-interactive-primary-active: var(--color-blue-20);
+  --color-interactive-secondary: var(--color-blue-50);
+  --color-interactive-disabled: var(--color-gray-70);
+
+  /* Next.js Default Variables */
+  --background: var(--color-background-primary);
+  --foreground: var(--color-text-primary);
+
+  /* Gradients */
+  --color-gradient-skeleton: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+}
+
+/* ====================================== */
+/* Desktop Typography Overrides          */
+/* ====================================== */
+/* 현재는 모바일/데스크톱 동일한 값 사용 */
+/* 필요 시 미디어 쿼리로 분기 가능 */
+
+/* ====================================== */
+/* Language-based Font Family             */
+/* ====================================== */
+html[data-lang='en'] {
+  --font-family-default: var(--font-family-english);
+}
+
+/* ====================================== */
+/* Body Styles                            */
+/* ====================================== */
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-family-default);
+}
+
+/* ====================================== */
+/* Utility Classes                        */
+/* ====================================== */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
