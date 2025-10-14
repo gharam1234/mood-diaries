@@ -25,84 +25,84 @@ const mockDiaryData: DiaryData[] = [
     emotion: EmotionType.SAD,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다. 한줄까지만 노출 됩니다.',
-    image: '/images/dog-1.jpg'
+    image: '/images/emotion-sad-m.png'
   },
   {
     id: '2',
     emotion: EmotionType.SURPRISE,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-2.jpg'
+    image: '/images/emotion-surprise-m.png'
   },
   {
     id: '3',
     emotion: EmotionType.ANGRY,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-3.jpg'
+    image: '/images/emotion-angry-m.png'
   },
   {
     id: '4',
     emotion: EmotionType.HAPPY,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-4.jpg'
+    image: '/images/emotion-happy-m.png'
   },
   {
     id: '5',
     emotion: EmotionType.ETC,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다. 한줄까지만 노출 됩니다.',
-    image: '/images/dog-5.jpg'
+    image: '/images/emotion-etc-m.png'
   },
   {
     id: '6',
     emotion: EmotionType.SURPRISE,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-6.jpg'
+    image: '/images/emotion-surprise-m.png'
   },
   {
     id: '7',
     emotion: EmotionType.ANGRY,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-7.jpg'
+    image: '/images/emotion-angry-m.png'
   },
   {
     id: '8',
     emotion: EmotionType.HAPPY,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-8.jpg'
+    image: '/images/emotion-happy-m.png'
   },
   {
     id: '9',
     emotion: EmotionType.SAD,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다. 한줄까지만 노출 됩니다.',
-    image: '/images/dog-9.jpg'
+    image: '/images/emotion-sad-m.png'
   },
   {
     id: '10',
     emotion: EmotionType.SURPRISE,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-10.jpg'
+    image: '/images/emotion-surprise-m.png'
   },
   {
     id: '11',
     emotion: EmotionType.ANGRY,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-1.jpg'
+    image: '/images/emotion-angry-m.png'
   },
   {
     id: '12',
     emotion: EmotionType.HAPPY,
     date: '2024. 03. 12',
     title: '타이틀 영역 입니다.',
-    image: '/images/dog-2.jpg'
+    image: '/images/emotion-happy-m.png'
   }
 ];
 
