@@ -1,3 +1,4 @@
+"use client";
 import React from 'react';
 import Image from 'next/image';
 import { Button } from '@/commons/components/button';
@@ -71,6 +72,7 @@ export const DiariesDetail: React.FC = () => {
                 alt={emotionData.label}
                 width={32}
                 height={32}
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
             <span className={styles.emotionText}>{emotionData.label}</span>
@@ -95,6 +97,7 @@ export const DiariesDetail: React.FC = () => {
               alt="복사"
               width={24}
               height={24}
+              style={{ width: 'auto', height: 'auto' }}
             />
             <span className={styles.copyText}>내용 복사</span>
           </button>
