@@ -115,7 +115,7 @@
   flex: 1;
   min-height: 200px;
   background-color: var(--color-background-primary);
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 /* Footer 영역: 1168 * 160 */

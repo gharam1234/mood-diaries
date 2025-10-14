@@ -10,7 +10,7 @@
 
 ==============================================
 
-조건-피그마) 활용할MCP: CursorTalkToFigmaMCP(채널명: rloe8q5m)
+조건-피그마) 활용할MCP: CursorTalkToFigmaMCP(채널명: bq4xe95s)
 조건-피그마) 구현될 컴포넌트 노드ID(search 영역): 3:1559
 
 조건-파일경로) 구현될 TSX 파일경로: src/components/diaries/index.tsx
@@ -20,7 +20,7 @@
 
 조건-공통목록) 사용할 공통컴포넌트 목록
             - <SelectBox />, <Searchbar />, <Button />
-
+ 
 조건-공통목록) 사용할 색상 목록(global.css에 명시된 변수 토큰 활용)
             - 비슷한 토큰 선택하여 사용(하드코딩 금지)
 
@@ -40,3 +40,6 @@
                 - 필터선택박스: <SelectBox />
                 - 검색바: <Searchbar />
                 - 일기쓰기: <Button />
+
+==============================================
+핵심요구사항 1. 일기쓰기 왼쪽에 피그마에 보면 plus_outline_light_m 아이콘이 있어야 되는데 없어 아이콘 구현할 것
