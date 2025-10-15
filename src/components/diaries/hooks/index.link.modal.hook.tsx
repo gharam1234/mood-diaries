@@ -37,7 +37,7 @@ export interface ModalLinkHookReturn {
  * ```
  */
 export const useModalLink = (): ModalLinkHookReturn => {
-  const { openModal, closeModal, isOpen } = useModal()
+  const { openModal, closeTop, isAnyOpen } = useModal()
 
   /**
    * 일기쓰기 모달을 엽니다
@@ -60,12 +60,12 @@ export const useModalLink = (): ModalLinkHookReturn => {
    * ```
    */
   const closeWriteDiaryModal = useCallback(() => {
-    closeModal()
-  }, [closeModal])
+    closeTop()
+  }, [closeTop])
 
   return {
     openWriteDiaryModal,
     closeWriteDiaryModal,
-    isModalOpen: isOpen
+    isModalOpen: isAnyOpen
   }
 }
