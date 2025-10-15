@@ -30,5 +30,9 @@
     "playwright.config.ts",   // ✅ 이 줄 추가
     "tests"                   // ✅ 테스트 폴더가 있다면 추가
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "**/*.stories.tsx",
+    "**/*.stories.ts"
+  ]
 }
