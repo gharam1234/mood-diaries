@@ -69,18 +69,21 @@ test.describe('Layout Link Routing', () => {
     await expect(diariesTab).toHaveClass(/inactiveTab/);
   });
 
-  test('일기 상세 페이지에서 일기보관함 탭이 활성화됨', async ({ page }) => {
+  test('일기 상세 페이지에서 navigation 영역이 숨겨짐', async ({ page }) => {
     // 일기 상세 페이지로 이동 (예: /diaries/1)
     await page.goto('/diaries/1');
     await page.waitForSelector('[data-testid="logo"]', { timeout: 1000 });
     
-    // 일기보관함 탭이 활성화되었는지 확인
-    const diariesTab = page.locator('[data-testid="diaries-tab"]');
-    await expect(diariesTab).toHaveClass(/activeTab/);
+    // navigation 영역이 숨겨져 있는지 확인 (영역 노출 제어 기능 검증)
+    const navigationVisible = await page.isVisible('[data-testid="navigation"]');
+    expect(navigationVisible).toBe(false);
     
-    // 사진보관함 탭이 비활성화되었는지 확인
+    // diaries-tab과 pictures-tab이 DOM에 존재하지 않는지 확인
+    const diariesTab = page.locator('[data-testid="diaries-tab"]');
     const picturesTab = page.locator('[data-testid="pictures-tab"]');
-    await expect(picturesTab).toHaveClass(/inactiveTab/);
+    
+    await expect(diariesTab).toHaveCount(0);
+    await expect(picturesTab).toHaveCount(0);
   });
 
   test('네비게이션 탭들이 클릭 가능한 커서 스타일을 가짐', async ({ page }) => {
@@ -108,14 +111,11 @@ test.describe('Layout Link Routing', () => {
     await expect(diariesTab).toHaveClass(/activeTab/);
     await expect(picturesTab).toHaveClass(/inactiveTab/);
     
-    // 사진보관함으로 이동 (skip 대상이지만 네비게이션 테스트를 위해 유지)
-    await page.click('[data-testid="pictures-tab"]');
-    await expect(page).toHaveURL('/pictures');
+    // 일기 상세 페이지로 이동하여 네비게이션 테스트
+    await page.goto('/diaries/1');
+    await page.waitForSelector('[data-testid="logo"]', { timeout: 1000 });
     
-    // 활성 상태 변경 확인
-    await expect(picturesTab).toHaveClass(/activeTab/);
-    await expect(diariesTab).toHaveClass(/inactiveTab/);
-    
+    // 일기 상세 페이지에서는 navigation이 숨겨져 있으므로
     // 로고 클릭으로 일기목록으로 돌아가기
     await page.click('[data-testid="logo"]');
     await expect(page).toHaveURL('/diaries');

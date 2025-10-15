@@ -19,8 +19,16 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "types": ["@playwright/test"] // ✅ 이 줄 추가
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "playwright.config.ts",   // ✅ 이 줄 추가
+    "tests"                   // ✅ 테스트 폴더가 있다면 추가
+  ],
   "exclude": ["node_modules"]
 }
