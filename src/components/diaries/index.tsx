@@ -240,6 +240,7 @@ export const Diaries: React.FC = () => {
           {/* 일기쓰기 버튼 */}
           <div className={styles.writeButton}>
             <Button
+              data-testid="write-diary-button"
               variant="primary"
               theme="light"
               size="medium"

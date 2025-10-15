@@ -57,7 +57,10 @@
 }
 
 .radioInput {
-  display: none;
+  position: absolute;
+  opacity: 0.0001; /* 시각적으로만 숨기되 클릭 가능 상태 유지 */
+  width: 24px;
+  height: 24px;
 }
 
 .radioCustom {
@@ -163,3 +166,13 @@
 }
 
 /* closeButton, submitButton 클래스 제거됨 - inline style로 대체 */
+
+/* 에러 메시지 스타일 */
+.errorMessage {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-status-error);
+  margin-top: 4px;
+  letter-spacing: -0.12px;
+}

@@ -1,28 +1,30 @@
 "use client"
 
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './styles.module.css';
 import { Input } from '../../commons/components/input';
 import { Button } from '../../commons/components/button';
 import { EmotionType, EMOTION_LIST, getEmotionLabel } from '../../commons/constants/enum';
-import { useModal } from '../../commons/providers/modal/modal.provider';
 import { useModalCloseLink } from './hooks/index.link.modal.close.hook';
+import { useFormHook } from './hooks/index.form.hook';
 
 const DiariesNew: React.FC = () => {
-  // 모달 훅 사용
-  const { closeTop } = useModal();
+  // 모달 닫기 훅 사용
   const { openCancelConfirmModal } = useModalCloseLink();
   
-  // 선택된 감정 상태 관리
-  const [selectedEmotion, setSelectedEmotion] = useState<EmotionType | null>(null);
-  // 제목 입력 상태 관리
-  const [title, setTitle] = useState('');
-  // 내용 입력 상태 관리
-  const [content, setContent] = useState('');
+  // 폼 훅 사용
+  const {
+    register,
+    handleSubmit,
+    errors,
+    watchedValues,
+    setEmotion,
+    isFormValid
+  } = useFormHook();
 
   // 감정 선택 핸들러
   const handleEmotionChange = (emotion: EmotionType) => {
-    setSelectedEmotion(emotion);
+    setEmotion(emotion);
   };
 
   // 닫기 버튼 핸들러: 등록취소 모달을 부모 위에 오버레이로 띄움
@@ -30,21 +32,8 @@ const DiariesNew: React.FC = () => {
     openCancelConfirmModal();
   };
 
-  // 등록하기 버튼 핸들러
-  const handleSubmit = () => {
-    // TODO: 등록 로직 구현
-    console.log('등록하기 버튼 클릭', {
-      emotion: selectedEmotion,
-      title,
-      content
-    });
-    
-    // 등록 후 모달 닫기
-    closeTop();
-  };
-
   return (
-    <div className={styles.wrapper}>
+    <form onSubmit={handleSubmit} className={styles.wrapper}>
       {/* 헤더 영역 */}
       <div className={styles.header}>
         <h1 className={styles.headerTitle}>일기 쓰기</h1>
@@ -60,7 +49,7 @@ const DiariesNew: React.FC = () => {
                 type="radio"
                 name="emotion"
                 value={emotion}
-                checked={selectedEmotion === emotion}
+                checked={watchedValues.emotion === emotion}
                 onChange={() => handleEmotionChange(emotion)}
                 className={styles.radioInput}
               />
@@ -69,6 +58,9 @@ const DiariesNew: React.FC = () => {
             </label>
           ))}
         </div>
+        {errors.emotion && (
+          <span className={styles.errorMessage}>{errors.emotion.message}</span>
+        )}
       </div>
       
       {/* 제목 입력 영역 */}
@@ -76,13 +68,15 @@ const DiariesNew: React.FC = () => {
         <Input
           label="제목"
           placeholder="제목을 입력합니다."
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          {...register('title')}
           variant="primary"
           size="medium"
           theme="light"
           style={{ width: '100%' }}
         />
+        {errors.title && (
+          <span className={styles.errorMessage}>{errors.title.message}</span>
+        )}
       </div>
       
       {/* 내용 입력 영역 */}
@@ -90,16 +84,19 @@ const DiariesNew: React.FC = () => {
         <label className={styles.contentLabel}>내용</label>
         <textarea
           placeholder="내용을 입력합니다."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+          {...register('content')}
           className={styles.contentTextarea}
           rows={6}
         />
+        {errors.content && (
+          <span className={styles.errorMessage}>{errors.content.message}</span>
+        )}
       </div>
       
       {/* 푸터 영역 */}
       <div className={styles.footer}>
         <Button
+          type="button"
           variant="secondary"
           size="medium"
           theme="light"
@@ -109,16 +106,17 @@ const DiariesNew: React.FC = () => {
           닫기
         </Button>
         <Button
+          type="submit"
           variant="primary"
           size="medium"
           theme="light"
-          onClick={handleSubmit}
+          disabled={!isFormValid}
           style={{ width: '104px' }}
         >
           등록하기
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 
