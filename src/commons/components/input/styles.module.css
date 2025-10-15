@@ -67,6 +67,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  
 }
 
 /* 에러 메시지 스타일 */
@@ -133,16 +134,19 @@
 /* Medium Size (기본) */
 .inputWrapper--medium {
   height: 48px;
-  /* padding: 0 16px; */
+  padding: 0 0 0 16px;
 }
 
 .inputWrapper--medium.inputWrapper--with-start-icon {
   padding-left: 12px;
 }
 
-.inputWrapper--medium.inputWrapper--with-end-icon,
+.inputWrapper--medium.inputWrapper--with-end-icon {
+  padding-right: 12px;
+}
+
 .inputWrapper--medium.inputWrapper--with-end-button {
-  /* padding-right: 12px; */
+  padding-right: 0; /* endButton이 있을 때는 padding 제거 */
 }
 
 .input--medium {
@@ -164,7 +168,7 @@
 
 .inputWrapper--medium .endButton {
   height: 32px;
-  margin-left: 12px;
+  margin-left: 4px; /* 12px에서 4px로 줄여서 overflow 방지 */
 }
 
 /* Large Size */

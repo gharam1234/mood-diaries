@@ -362,7 +362,27 @@ export const SelectBox = forwardRef<HTMLDivElement, SelectBoxProps>(({
                   onClick={() => selectOption(option)}
                   onMouseEnter={() => setFocusedIndex(index)}
                 >
-                  {option.label}
+                  <span className={styles.optionText}>
+                    {option.label}
+                  </span>
+                  {(option.value === selectedValue || index === focusedIndex) && (
+                    <span className={styles.optionCheckIcon} aria-hidden="true">
+                      <svg 
+                        width={size === 'small' ? '14' : size === 'large' ? '18' : '16'} 
+                        height={size === 'small' ? '14' : size === 'large' ? '18' : '16'} 
+                        viewBox="0 0 16 16" 
+                        fill="none"
+                      >
+                        <path 
+                          d="M13.5 4.5L6 12L2.5 8.5" 
+                          stroke="currentColor" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                  )}
                 </li>
               ))}
             </ul>

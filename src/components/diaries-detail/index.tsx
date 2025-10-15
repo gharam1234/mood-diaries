@@ -182,9 +182,21 @@ export const DiariesDetail: React.FC = () => {
             placeholder="회고를 남겨보세요."
             value={retrospectInput}
             onChange={(e) => setRetrospectInput(e.target.value)}
-            style={{ width: '1101px' }}
-            endButton={
-              <Button
+            style={{ width: '1081px' }}
+            // endButton={
+            //   <Button
+            //     variant="primary"
+            //     theme="light"
+            //     size="medium"
+            //     onClick={handleRetrospectSubmit}
+            //     style={{ width: '51px' }}
+            //   >
+            //     입력
+            //   </Button>
+            // }
+            // 회고칸과 입력사이에 갭이 16px 적용시키기 위해 따로 분리 함
+          />
+          <Button
                 variant="primary"
                 theme="light"
                 size="medium"
@@ -193,8 +205,6 @@ export const DiariesDetail: React.FC = () => {
               >
                 입력
               </Button>
-            }
-          />
         </div>
       </div>
 
