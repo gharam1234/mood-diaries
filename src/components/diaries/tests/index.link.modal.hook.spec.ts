@@ -58,22 +58,25 @@ test.describe('모달 링크 훅 테스트', () => {
     await expect(modal).not.toBeVisible({ timeout: 500 })
   })
 
-  test('모달 내 닫기 버튼 클릭시 모달이 닫힌다', async ({ page }) => {
+  test('모달 내 닫기 버튼 클릭시 등록취소 모달이 추가로 열린다', async ({ page }) => {
     // 일기쓰기 버튼 클릭하여 모달 열기
     const writeButton = page.locator('button:has-text("일기쓰기")')
     await writeButton.click()
 
-    // 모달이 열렸는지 확인
-    const modal = page.locator('[data-testid="modal-overlay"]')
-    await expect(modal).toBeVisible()
+    // 부모 모달이 열렸는지 확인 (오버레이 1개)
+    await expect(page.locator('[data-testid="modal-overlay"]')).toHaveCount(1)
 
     // 모달 내 닫기 버튼 클릭
     const closeButton = page.locator('button:has-text("닫기")')
     await expect(closeButton).toBeVisible()
     await closeButton.click()
 
-    // 모달이 닫혔는지 확인
-    await expect(modal).not.toBeVisible({ timeout: 500 })
+    // 자식 모달이 추가로 열렸는지 확인 (오버레이 2개)
+    await expect(page.locator('[data-testid="modal-overlay"]')).toHaveCount(2)
+    
+    // 등록취소 모달의 내용이 표시되는지 확인
+    await expect(page.getByText('일기 등록 취소')).toBeVisible()
+    await expect(page.getByText('작성 중인 내용을 취소하시겠어요?')).toBeVisible()
   })
 
   test('ESC 키 누르면 모달이 닫힌다', async ({ page }) => {

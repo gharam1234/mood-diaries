@@ -6,10 +6,12 @@ import { Input } from '../../commons/components/input';
 import { Button } from '../../commons/components/button';
 import { EmotionType, EMOTION_LIST, getEmotionLabel } from '../../commons/constants/enum';
 import { useModal } from '../../commons/providers/modal/modal.provider';
+import { useModalCloseLink } from './hooks/index.link.modal.close.hook';
 
 const DiariesNew: React.FC = () => {
   // 모달 훅 사용
   const { closeTop } = useModal();
+  const { openCancelConfirmModal } = useModalCloseLink();
   
   // 선택된 감정 상태 관리
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionType | null>(null);
@@ -23,9 +25,9 @@ const DiariesNew: React.FC = () => {
     setSelectedEmotion(emotion);
   };
 
-  // 닫기 버튼 핸들러
+  // 닫기 버튼 핸들러: 등록취소 모달을 부모 위에 오버레이로 띄움
   const handleClose = () => {
-    closeTop();
+    openCancelConfirmModal();
   };
 
   // 등록하기 버튼 핸들러
