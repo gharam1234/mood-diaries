@@ -8,6 +8,7 @@ import { Button } from '../../commons/components/button';
 import { Pagination } from '../../commons/components/pagination';
 import Image from 'next/image';
 import { EmotionType, getEmotionData } from '../../commons/constants/enum';
+import { useModalLink } from './hooks/index.link.modal.hook';
 
 // 일기 데이터 인터페이스
 interface DiaryData {
@@ -163,6 +164,9 @@ const DiaryCard: React.FC<{ diary: DiaryData }> = ({ diary }) => {
  * 와이어프레임 구조: gap -> search -> gap -> main -> gap -> pagination -> gap
  */
 export const Diaries: React.FC = () => {
+  // 모달 훅 사용
+  const { openWriteDiaryModal } = useModalLink();
+  
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPages = 5; // 총 페이지 수 (예시)
@@ -189,7 +193,7 @@ export const Diaries: React.FC = () => {
 
   // 일기쓰기 버튼 클릭 핸들러
   const handleWriteDiary = () => {
-    console.log('일기쓰기 클릭');
+    openWriteDiaryModal();
   };
 
   // 페이지 변경 핸들러
@@ -199,7 +203,7 @@ export const Diaries: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="diaries-container">
       {/* Gap 1: 1168 * 32 */}
       <div className={styles.gap32}></div>
       

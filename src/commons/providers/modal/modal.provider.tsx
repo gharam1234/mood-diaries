@@ -58,6 +58,7 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
     <div 
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={onClose}
+      data-testid="modal-overlay"
     >
       <div 
         className="relative bg-white rounded-lg shadow-xl animate-in fade-in-0 zoom-in-95 duration-300"

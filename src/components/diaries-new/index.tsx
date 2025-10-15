@@ -5,8 +5,12 @@ import styles from './styles.module.css';
 import { Input } from '../../commons/components/input';
 import { Button } from '../../commons/components/button';
 import { EmotionType, EMOTION_LIST, getEmotionLabel } from '../../commons/constants/enum';
+import { useModal } from '../../commons/providers/modal/modal.provider';
 
 const DiariesNew: React.FC = () => {
+  // 모달 훅 사용
+  const { closeModal } = useModal();
+  
   // 선택된 감정 상태 관리
   const [selectedEmotion, setSelectedEmotion] = useState<EmotionType | null>(null);
   // 제목 입력 상태 관리
@@ -21,8 +25,7 @@ const DiariesNew: React.FC = () => {
 
   // 닫기 버튼 핸들러
   const handleClose = () => {
-    // TODO: 닫기 로직 구현
-    console.log('닫기 버튼 클릭');
+    closeModal();
   };
 
   // 등록하기 버튼 핸들러
@@ -33,6 +36,9 @@ const DiariesNew: React.FC = () => {
       title,
       content
     });
+    
+    // 등록 후 모달 닫기
+    closeModal();
   };
 
   return (
