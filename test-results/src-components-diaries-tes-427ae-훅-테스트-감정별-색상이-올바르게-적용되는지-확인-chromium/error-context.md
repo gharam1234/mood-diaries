@@ -1,0 +1,44 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5] [cursor=pointer]: 민지의 다이어리
+    - img "배너 이미지" [ref=e8]
+    - navigation [ref=e10]:
+      - generic [ref=e11]:
+        - generic [ref=e13] [cursor=pointer]: 일기보관함
+        - generic [ref=e15] [cursor=pointer]: 사진보관함
+    - main [ref=e16]:
+      - generic [ref=e17]:
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - button "전체" [ref=e24] [cursor=pointer]:
+              - generic [ref=e25]: 전체
+              - img [ref=e27]
+            - searchbox "검색어 입력" [ref=e33]
+          - button "일기쓰기" [ref=e35] [cursor=pointer]:
+            - img [ref=e37]
+            - generic [ref=e38]: 일기쓰기
+        - main [ref=e40]:
+          - generic [ref=e42]: 작성된 일기가 없습니다.
+        - navigation "페이지네이션" [ref=e45]:
+          - button "이전 페이지로 이동" [disabled] [ref=e46]:
+            - img [ref=e47]
+          - generic [ref=e49]:
+            - button "1페이지로 이동" [ref=e50] [cursor=pointer]: "1"
+            - button "2페이지로 이동" [ref=e51] [cursor=pointer]: "2"
+            - button "3페이지로 이동" [ref=e52] [cursor=pointer]: "3"
+            - button "4페이지로 이동" [ref=e53] [cursor=pointer]: "4"
+            - button "5페이지로 이동" [ref=e54] [cursor=pointer]: "5"
+          - button "다음 페이지로 이동" [ref=e55] [cursor=pointer]:
+            - img [ref=e56]
+    - contentinfo [ref=e59]:
+      - generic [ref=e60]:
+        - generic [ref=e61]: 민지의 다이어리
+        - generic [ref=e62]:
+          - generic [ref=e63]: "대표 : {name}"
+          - generic [ref=e64]: "Copyright © 2024. {name} Co., Ltd."
+  - alert [ref=e65]
+```

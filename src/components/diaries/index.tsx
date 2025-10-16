@@ -7,108 +7,71 @@ import { SearchBar as Searchbar } from '../../commons/components/searchbar';
 import { Button } from '../../commons/components/button';
 import { Pagination } from '../../commons/components/pagination';
 import Image from 'next/image';
-import { EmotionType, getEmotionData } from '../../commons/constants/enum';
+import { EmotionType, getEmotionData } from '@/commons/constants/enum';
 import { useModalLink } from './hooks/index.link.modal.hook';
+import { useDiaryBinding, DiaryData as BindingDiaryData } from './hooks/index.binding.hook';
 
-// 일기 데이터 인터페이스
-interface DiaryData {
-  id: string;
+/**
+ * 일기 카드 표시용 데이터 타입
+ * 
+ * @interface DiaryCardData
+ * @property {number} id - 일기 고유 ID
+ * @property {EmotionType} emotion - 감정 타입
+ * @property {string} date - 표시용 날짜 (YYYY. MM. DD 형식)
+ * @property {string} title - 일기 제목
+ * @property {string} image - 이미지 경로
+ */
+interface DiaryCardData {
+  id: number;
   emotion: EmotionType;
   date: string;
   title: string;
   image: string;
 }
 
-// Mock 데이터 생성
-const mockDiaryData: DiaryData[] = [
-  {
-    id: '1',
-    emotion: EmotionType.SAD,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다. 한줄까지만 노출 됩니다.',
-    image: '/images/emotion-sad-m.png'
-  },
-  {
-    id: '2',
-    emotion: EmotionType.SURPRISE,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-surprise-m.png'
-  },
-  {
-    id: '3',
-    emotion: EmotionType.ANGRY,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-angry-m.png'
-  },
-  {
-    id: '4',
-    emotion: EmotionType.HAPPY,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-happy-m.png'
-  },
-  {
-    id: '5',
-    emotion: EmotionType.ETC,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다. 한줄까지만 노출 됩니다.',
-    image: '/images/emotion-etc-m.png'
-  },
-  {
-    id: '6',
-    emotion: EmotionType.SURPRISE,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-surprise-m.png'
-  },
-  {
-    id: '7',
-    emotion: EmotionType.ANGRY,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-angry-m.png'
-  },
-  {
-    id: '8',
-    emotion: EmotionType.HAPPY,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-happy-m.png'
-  },
-  {
-    id: '9',
-    emotion: EmotionType.SAD,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다. 한줄까지만 노출 됩니다.',
-    image: '/images/emotion-sad-m.png'
-  },
-  {
-    id: '10',
-    emotion: EmotionType.SURPRISE,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-surprise-m.png'
-  },
-  {
-    id: '11',
-    emotion: EmotionType.ANGRY,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-angry-m.png'
-  },
-  {
-    id: '12',
-    emotion: EmotionType.HAPPY,
-    date: '2024. 03. 12',
-    title: '타이틀 영역 입니다.',
-    image: '/images/emotion-happy-m.png'
-  }
-];
+/**
+ * 바인딩 데이터를 카드 표시용 데이터로 변환하는 함수
+ * 
+ * @description
+ * 로컬스토리지에서 가져온 원본 데이터를 화면 표시에 적합한 형태로 변환합니다.
+ * 날짜 형식을 변환하고 감정에 따른 이미지 경로를 설정합니다.
+ * 
+ * @param {BindingDiaryData} bindingData - 바인딩된 원본 데이터
+ * @returns {DiaryCardData} 카드 표시용 데이터
+ */
+const convertToCardData = (bindingData: BindingDiaryData): DiaryCardData => {
+  const emotionData = getEmotionData(bindingData.emotion);
+  
+  // createdAt을 YYYY. MM. DD 형식으로 변환
+  const formatDate = (dateString: string): string => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}. ${month}. ${day}`;
+  };
 
-// 일기 카드 컴포넌트
-const DiaryCard: React.FC<{ diary: DiaryData }> = ({ diary }) => {
+  return {
+    id: bindingData.id,
+    emotion: bindingData.emotion,
+    date: formatDate(bindingData.createdAt),
+    title: bindingData.title,
+    image: emotionData.images.medium
+  };
+};
+
+/**
+ * 일기 카드 컴포넌트
+ * 
+ * @description
+ * 개별 일기 데이터를 카드 형태로 표시하는 컴포넌트입니다.
+ * 감정에 따른 이미지와 색상을 적용하여 시각적으로 구분합니다.
+ * 
+ * @param {Object} props - 컴포넌트 props
+ * @param {DiaryCardData} props.diary - 카드에 표시할 일기 데이터
+ * @returns {JSX.Element} 일기 카드 JSX 요소
+ */
+const DiaryCard: React.FC<{ diary: DiaryCardData }> = ({ diary }) => {
   const emotionData = getEmotionData(diary.emotion);
   
   return (
@@ -166,6 +129,9 @@ const DiaryCard: React.FC<{ diary: DiaryData }> = ({ diary }) => {
 export const Diaries: React.FC = () => {
   // 모달 훅 사용
   const { openWriteDiaryModal } = useModalLink();
+  
+  // 바인딩 훅 사용
+  const { diaries, loading, error } = useDiaryBinding();
   
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = React.useState(1);
@@ -268,9 +234,17 @@ export const Diaries: React.FC = () => {
       {/* Main 영역: 1168 * 936 */}
       <main className={styles.main}>
         <div className={styles.diaryGrid}>
-          {mockDiaryData.map((diary) => (
-            <DiaryCard key={diary.id} diary={diary} />
-          ))}
+          {loading ? (
+            <div>로딩 중...</div>
+          ) : error ? (
+            <div>오류가 발생했습니다: {error}</div>
+          ) : diaries.length === 0 ? (
+            <div>작성된 일기가 없습니다.</div>
+          ) : (
+            diaries.map((diary) => (
+              <DiaryCard key={diary.id} diary={convertToCardData(diary)} />
+            ))
+          )}
         </div>
       </main>
       
