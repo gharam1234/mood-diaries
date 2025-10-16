@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { EmotionType, getEmotionData } from '@/commons/constants/enum';
 import { useModalLink } from './hooks/index.link.modal.hook';
 import { useDiaryBinding, DiaryData as BindingDiaryData } from './hooks/index.binding.hook';
+import { useLinkRouting } from './hooks/index.link.routing.hook';
 
 /**
  * 일기 카드 표시용 데이터 타입
@@ -66,16 +67,40 @@ const convertToCardData = (bindingData: BindingDiaryData): DiaryCardData => {
  * @description
  * 개별 일기 데이터를 카드 형태로 표시하는 컴포넌트입니다.
  * 감정에 따른 이미지와 색상을 적용하여 시각적으로 구분합니다.
+ * 카드 클릭 시 해당 일기의 상세 페이지로 이동합니다.
  * 
  * @param {Object} props - 컴포넌트 props
  * @param {DiaryCardData} props.diary - 카드에 표시할 일기 데이터
+ * @param {Function} props.onCardClick - 카드 클릭 핸들러
  * @returns {JSX.Element} 일기 카드 JSX 요소
  */
-const DiaryCard: React.FC<{ diary: DiaryCardData }> = ({ diary }) => {
+const DiaryCard: React.FC<{ 
+  diary: DiaryCardData; 
+  onCardClick: (diaryId: number) => void;
+}> = ({ diary, onCardClick }) => {
   const emotionData = getEmotionData(diary.emotion);
   
+  /**
+   * 카드 클릭 핸들러
+   * 
+   * @description
+   * 카드 클릭 시 해당 일기의 상세 페이지로 이동합니다.
+   * 삭제 버튼 클릭은 이벤트 전파를 막아 페이지 이동을 방지합니다.
+   */
+  const handleCardClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    // 삭제 버튼 클릭 시 이벤트 전파 중단
+    if ((event.target as HTMLElement).closest('.closeButton')) {
+      return;
+    }
+    
+    onCardClick(diary.id);
+  };
+  
   return (
-    <div className={styles.diaryCard}>
+    <div 
+      className={styles.diaryCard}
+      onClick={handleCardClick}
+    >
       {/* 카드 이미지 */}
       <div className={styles.cardImage}>
         <Image
@@ -133,6 +158,9 @@ export const Diaries: React.FC = () => {
   // 바인딩 훅 사용
   const { diaries, loading, error } = useDiaryBinding();
   
+  // 링크 라우팅 훅 사용
+  const { navigateToDiaryDetail } = useLinkRouting();
+  
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPages = 5; // 총 페이지 수 (예시)
@@ -166,6 +194,11 @@ export const Diaries: React.FC = () => {
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     console.log('페이지 변경:', page);
+  };
+
+  // 일기 카드 클릭 핸들러
+  const handleDiaryCardClick = (diaryId: number) => {
+    navigateToDiaryDetail(diaryId);
   };
 
   return (
@@ -242,7 +275,11 @@ export const Diaries: React.FC = () => {
             <div>작성된 일기가 없습니다.</div>
           ) : (
             diaries.map((diary) => (
-              <DiaryCard key={diary.id} diary={convertToCardData(diary)} />
+              <DiaryCard 
+                key={diary.id} 
+                diary={convertToCardData(diary)} 
+                onCardClick={handleDiaryCardClick}
+              />
             ))
           )}
         </div>

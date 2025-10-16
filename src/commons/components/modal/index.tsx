@@ -106,22 +106,22 @@ export const Modal: React.FC<ModalProps> = ({
     onClose();
   };
 
-  // ESC 키로 모달 닫기
-  React.useEffect(() => {
-    const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
+  // ESC 키 처리는 modal.provider에서 담당하므로 여기서는 비활성화
+  // React.useEffect(() => {
+  //   const handleEscape = (event: KeyboardEvent) => {
+  //     if (event.key === 'Escape') {
+  //       onClose();
+  //     }
+  //   };
 
-    if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-    }
+  //   if (isOpen) {
+  //     document.addEventListener('keydown', handleEscape);
+  //   }
 
-    return () => {
-      document.removeEventListener('keydown', handleEscape);
-    };
-  }, [isOpen, onClose]);
+  //   return () => {
+  //     document.removeEventListener('keydown', handleEscape);
+  //   };
+  // }, [isOpen, onClose]);
 
   // 모달이 열려있지 않으면 렌더링하지 않음 (Hook 호출 이후에 배치)
   if (!isOpen) return null;

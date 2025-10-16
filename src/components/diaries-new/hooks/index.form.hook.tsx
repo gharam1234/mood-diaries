@@ -115,7 +115,8 @@ export const useFormHook = () => {
         onClose={handleConfirm}
         confirmText="확인"
         onConfirm={handleConfirm}
-      />
+      />,
+      handleConfirm // onClose 콜백 전달
     );
   };
 

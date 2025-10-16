@@ -156,6 +156,7 @@ test.describe('일기 등록 폼 기능 테스트', () => {
     await expect(page.locator('[data-testid="modal-overlay"]')).not.toBeVisible();
   });
 
+
   test('폼 유효성 검사가 올바르게 작동하는지 확인', async ({ page }) => {
     // /diaries 페이지 로드 및 일기쓰기 모달 열기
     await page.goto('/diaries');

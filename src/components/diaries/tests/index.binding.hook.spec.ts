@@ -47,23 +47,20 @@ test.describe('Diaries 바인딩 훅 테스트', () => {
    * 테스트 전 공통 설정
    * 
    * @description
-   * 각 테스트 실행 전에 로컬스토리지에 테스트 데이터를 설정하고
+   * 각 테스트 실행 전에 페이지 로드 전에 로컬스토리지에 테스트 데이터를 설정하고
    * 페이지를 로드합니다.
    */
   test.beforeEach(async ({ page }) => {
+    // 페이지 로드 전에 로컬스토리지에 테스트 데이터 설정
+    await page.addInitScript((data) => {
+      localStorage.setItem('diaries', JSON.stringify(data));
+    }, testDiaryData);
+    
     // 페이지로 이동
     await page.goto('/diaries');
     
     // 페이지가 완전히 로드될 때까지 대기 (data-testid 사용)
     await page.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
-    
-    // 로컬스토리지에 테스트 데이터 설정 (페이지 로드 후)
-    await page.evaluate((data) => {
-      localStorage.setItem('diaries', JSON.stringify(data));
-    }, testDiaryData);
-    
-    // 바인딩 훅이 데이터를 로드할 때까지 추가 대기
-    await page.waitForTimeout(300);
   });
 
   /**

@@ -113,6 +113,7 @@
   background-color: var(--color-background-primary);
   border-radius: 16px;
   overflow: hidden;
+  cursor: pointer; /* 카드 클릭 가능 표시 */
   /* box-shadow 제거됨 (핵심요구사항) */
 }
 
