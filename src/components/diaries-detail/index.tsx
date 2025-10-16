@@ -1,35 +1,30 @@
 "use client";
+
 import React, { useState } from 'react';
 import Image from 'next/image';
+
 import { Button } from '@/commons/components/button';
 import { Input } from '@/commons/components/input';
-import { EmotionType, getEmotionData } from '@/commons/constants/enum';
+import { getEmotionData } from '@/commons/constants/enum';
+
+import { useDiaryBinding } from './hooks/index.binding.hook';
 import styles from './styles.module.css';
 
-// Mock 데이터 인터페이스
-interface DiaryDetailData {
-  id: string;
-  title: string;
-  content: string;
-  emotion: EmotionType;
-  createdAt: string;
-}
-
-// 회고 데이터 인터페이스
+/**
+ * 회고 데이터 인터페이스
+ * 
+ * @interface RetrospectData
+ * @property {string} id - 회고 고유 ID
+ * @property {string} content - 회고 내용
+ * @property {string} createdAt - 작성일 (YYYY. MM. DD 형식)
+ */
 interface RetrospectData {
   id: string;
   content: string;
   createdAt: string;
 }
 
-// Mock 데이터
-const mockDiaryData: DiaryDetailData = {
-  id: '1',
-  title: '이것은 타이틀 입니다.',
-  content: '내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다내용이 들어갑니다',
-  emotion: EmotionType.HAPPY,
-  createdAt: '2024. 07. 12',
-};
+// Mock 데이터 제거됨 - 실제 데이터 사용
 
 // Mock 회고 데이터
 const mockRetrospectData: RetrospectData[] = [
@@ -56,14 +51,35 @@ const mockRetrospectData: RetrospectData[] = [
  * - retrospect-list: 회고 목록 영역
  */
 export const DiariesDetail: React.FC = () => {
-  const emotionData = getEmotionData(mockDiaryData.emotion);
+  // 실제 데이터 바인딩 훅 사용
+  const { diaryData, loading, error } = useDiaryBinding();
   const [retrospectInput, setRetrospectInput] = useState('');
   const [retrospectList, setRetrospectList] = useState<RetrospectData[]>(mockRetrospectData);
+
+  // 로딩 중이거나 에러가 있는 경우 처리
+  if (loading) {
+    return (
+      <div className={styles.container} data-testid="diary-detail-container">
+        <div data-testid="diary-loading">로딩 중...</div>
+      </div>
+    );
+  }
+
+  if (error || !diaryData) {
+    return (
+      <div className={styles.container} data-testid="diary-detail-container">
+        <div data-testid="diary-error">오류: {error || '일기 데이터를 찾을 수 없습니다.'}</div>
+      </div>
+    );
+  }
+
+  // 감정 데이터 가져오기
+  const emotionData = getEmotionData(diaryData.emotion);
 
   // 내용 복사 핸들러
   const handleCopyContent = async () => {
     try {
-      await navigator.clipboard.writeText(mockDiaryData.content);
+      await navigator.clipboard.writeText(diaryData.content);
       alert('내용이 복사되었습니다.');
     } catch (error) {
       console.error('복사 실패:', error);
@@ -101,11 +117,11 @@ export const DiariesDetail: React.FC = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="diary-detail-container">
       {/* detail-title 영역 */}
       <div className={styles.titleSection}>
         <div className={styles.titleContainer}>
-          <h1 className={styles.title}>{mockDiaryData.title}</h1>
+          <h1 className={styles.title} data-testid="diary-title">{diaryData.title}</h1>
         </div>
         <div className={styles.emotionAndDate}>
           <div className={styles.emotionContainer}>
@@ -118,10 +134,10 @@ export const DiariesDetail: React.FC = () => {
                 style={{ width: 'auto', height: 'auto' }}
               />
             </div>
-            <span className={styles.emotionText}>{emotionData.label}</span>
+            <span className={styles.emotionText} data-testid="diary-emotion-text">{emotionData.label}</span>
           </div>
           <div className={styles.dateContainer}>
-            <span className={styles.dateText}>{mockDiaryData.createdAt}</span>
+            <span className={styles.dateText} data-testid="diary-created-at">{diaryData.createdAt}</span>
             <span className={styles.dateLabel}>작성</span>
           </div>
         </div>
@@ -131,10 +147,10 @@ export const DiariesDetail: React.FC = () => {
       <div className={styles.contentSection}>
         <div className={styles.contentArea}>
           <div className={styles.contentLabel}>내용</div>
-          <div className={styles.contentText}>{mockDiaryData.content}</div>
+          <div className={styles.contentText} data-testid="diary-content">{diaryData.content}</div>
         </div>
         <div className={styles.copyContainer}>
-          <button className={styles.copyButton} onClick={handleCopyContent}>
+          <button className={styles.copyButton} onClick={handleCopyContent} data-testid="copy-button">
             <Image
               src="/icons/copy_outline_light_m.svg"
               alt="복사"
