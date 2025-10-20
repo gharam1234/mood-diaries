@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './styles.module.css';
 import { useLinkRouting } from './hooks/index.link.routing.hook';
 import { useAreaVisibility } from './hooks/index.area.hook';
+import { Button } from '../components/button';
 
 // Layout 컴포넌트 Props 타입 정의
 export interface LayoutProps {
@@ -28,6 +29,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   // URL 기반 영역 노출 여부 가져오기
   const areaVisibility = useAreaVisibility();
 
+  // 로컬스토리지에서 사용자 이름 가져오기
+  const [userName, setUserName] = React.useState<string>('');
+
+  React.useEffect(() => {
+    // 클라이언트 사이드에서만 실행
+    if (typeof window !== 'undefined') {
+      try {
+        const userData = localStorage.getItem('user');
+        if (userData) {
+          const parsedUser = JSON.parse(userData);
+          setUserName(parsedUser.name || '');
+        }
+      } catch (error) {
+        console.error('로컬스토리지에서 사용자 데이터를 가져오는 중 오류 발생:', error);
+        setUserName('');
+      }
+    }
+  }, []);
+
   return (
     <div className={styles.layout} data-testid="layout-container">
       {/* Header 영역: 1168 * 60 - 조건부 렌더링 */}
@@ -38,6 +58,36 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <span className={styles.logoText}>민지의 다이어리</span>
             </div>
           )}
+          
+          {/* 인증 상태 UI - 로그인/비로그인 상태 구분 */}
+          <div className={styles.authStatus}>
+            {userName ? (
+              // 로그인 상태: 사용자 이름 + 로그아웃 버튼
+              <>
+                <span className={styles.userName}>
+                  {userName}님
+                </span>
+                <Button
+                  variant="secondary"
+                  theme="light"
+                  size="medium"
+                  className={styles.logoutButton}
+                >
+                  로그아웃
+                </Button>
+              </>
+            ) : (
+              // 비로그인 상태: 로그인 버튼만
+              <Button
+                variant="primary"
+                theme="light"
+                size="medium"
+                className={styles.loginButton}
+              >
+                로그인
+              </Button>
+            )}
+          </div>
         </header>
       )}
       
