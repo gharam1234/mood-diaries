@@ -1,5 +1,5 @@
 /* ====================================== */
-/* Pictures 컴포넌트 스타일 - 와이어프레임 구조 */
+/* Pictures 컴포넌트 스타일 - 피그마 디자인 기반 */
 /* ====================================== */
 
 .container {
@@ -8,6 +8,7 @@
   width: 100%;
   max-width: 1168px;
   margin: 0 auto;
+  padding: 0 16px;
 }
 
 /* ====================================== */
@@ -16,7 +17,7 @@
 
 /* 첫 번째 gap 영역: 1168 x 32 */
 .gap {
-  width: 1168px;
+  width: 100%;
   height: 32px;
 }
 
@@ -32,12 +33,25 @@
 .filter {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 1168px;
+  justify-content: flex-start;
+  width: 100%;
   height: 48px;
   background-color: var(--color-background-secondary);
   border: 1px solid var(--color-border-primary);
   border-radius: 8px;
+  padding: 0 16px;
+}
+
+.filterContent {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: auto;
+  min-width: 240px;
+}
+
+.filterSelectBox {
+  width: 240px;
 }
 
 /* ====================================== */
@@ -46,12 +60,137 @@
 
 .main {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 1168px;
-  height: auto;
+  flex-direction: column;
+  width: 100%;
   min-height: 200px;
   background-color: var(--color-background-primary);
   border: 1px solid var(--color-border-primary);
   border-radius: 12px;
+  padding: 24px;
+}
+
+/* ====================================== */
+/* Picture Grid 레이아웃 */
+/* ====================================== */
+
+.pictureGrid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
+  align-items: flex-start;
+}
+
+/* ====================================== */
+/* Picture Card 스타일 */
+/* ====================================== */
+
+.pictureCard {
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.pictureCard:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.pictureImageContainer {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.pictureImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.2s ease-in-out;
+}
+
+.pictureCard:hover .pictureImage {
+  transform: none;
+}
+
+.pictureInfo {
+  display: none;
+}
+
+/* ====================================== */
+/* Empty State 스타일 */
+/* ====================================== */
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 200px;
+  background-color: var(--color-background-secondary);
+  border: 1px dashed var(--color-border-primary);
+  border-radius: 12px;
+}
+
+.emptyMessage {
+  font-size: var(--typography-body01-fontSize);
+  line-height: var(--typography-body01-lineHeight);
+  font-weight: var(--typography-body01-fontWeight);
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin: 0;
+}
+
+/* ====================================== */
+/* 반응형 디자인 */
+/* ====================================== */
+
+/* 태블릿 크기 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 12px;
+  }
+  
+  .pictureGrid {
+    gap: 16px;
+  }
+  
+  .pictureImageContainer {
+    width: 160px;
+    height: 160px;
+  }
+  
+  .main {
+    padding: 16px;
+  }
+}
+
+/* 모바일 크기 */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 8px;
+  }
+  
+  .pictureGrid {
+    gap: 12px;
+  }
+  
+  .pictureImageContainer {
+    width: 140px;
+    height: 140px;
+  }
+  
+  .main {
+    padding: 12px;
+  }
 }
