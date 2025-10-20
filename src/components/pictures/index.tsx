@@ -60,8 +60,8 @@ const Pictures: React.FC = () => {
                 <Image
                   src={dog.imageUrl}
                   alt={`${dog.name} - ${dog.description}`}
-                  width={200}
-                  height={200}
+                  width={640}
+                  height={640}
                   className={styles.pictureImage}
                   priority={false}
                 />

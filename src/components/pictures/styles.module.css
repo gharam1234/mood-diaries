@@ -75,11 +75,12 @@
 
 .pictureGrid {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  
   flex-wrap: wrap;
-  gap: 24px;
+  gap: 40px;
   width: 100%;
-  align-items: flex-start;
+  align-items: center;
 }
 
 /* ====================================== */
@@ -106,8 +107,8 @@
 
 .pictureImageContainer {
   position: relative;
-  width: 200px;
-  height: 200px;
+  width: 640px;
+  height: 640px;
   overflow: hidden;
   background-color: transparent;
 }
@@ -166,8 +167,8 @@
   }
   
   .pictureImageContainer {
-    width: 160px;
-    height: 160px;
+    width: 480px;
+    height: 480px;
   }
   
   .main {
@@ -186,8 +187,8 @@
   }
   
   .pictureImageContainer {
-    width: 140px;
-    height: 140px;
+    width: 320px;
+    height: 320px;
   }
   
   .main {
