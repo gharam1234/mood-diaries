@@ -96,6 +96,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
     
+    // 커스텀 이벤트 발생 (같은 탭에서의 변경 감지)
+    window.dispatchEvent(new CustomEvent('userDataChanged'));
+    
     // 상태 초기화
     setUser(null);
     setIsLoggedIn(false);

@@ -61,9 +61,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     };
 
+    // 커스텀 이벤트 감지 (같은 탭에서의 변경 감지)
+    const handleUserDataChange = () => {
+      loadUserName();
+    };
+
+    // 주기적 체크 (1초마다)
+    const intervalId = setInterval(() => {
+      loadUserName();
+    }, 1000);
+
+    // 이벤트 리스너 등록
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userDataChanged', handleUserDataChange);
+
     return () => {
+      // 이벤트 리스너 제거
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userDataChanged', handleUserDataChange);
+      clearInterval(intervalId);
     };
   }, [loadUserName]);
 

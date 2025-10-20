@@ -141,6 +141,9 @@ export const useLoginForm = () => {
           name: userData.fetchUserLoggedIn.name,
         }));
 
+        // 커스텀 이벤트 발생 (같은 탭에서의 변경 감지)
+        window.dispatchEvent(new CustomEvent('userDataChanged'));
+
         // 로그인 완료 모달 표시
         const handleSuccessConfirm = () => {
           closeAll();
