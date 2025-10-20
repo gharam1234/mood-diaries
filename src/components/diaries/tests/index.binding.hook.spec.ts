@@ -159,36 +159,66 @@ test.describe('Diaries 바인딩 훅 테스트', () => {
   });
 
   test('로컬스토리지가 비어있을 때 빈 상태가 표시되는지 확인', async ({ page }) => {
-    // 로컬스토리지 비우기
-    await page.evaluate(() => {
-      localStorage.removeItem('diaries');
+    // 새로운 페이지 컨텍스트에서 테스트 (beforeEach 우회)
+    const newPage = await page.context().newPage();
+    
+    // 페이지 로드 전에 로컬스토리지 비우기
+    await newPage.addInitScript(() => {
+      localStorage.clear();
     });
 
-    // 페이지 새로고침
-    await page.reload();
-    await page.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
+    // 페이지로 이동
+    await newPage.goto('/diaries');
+    await newPage.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
+
+    // 빈 상태 메시지가 표시되는지 확인
+    const emptyMessage = newPage.locator('text=작성된 일기가 없습니다.');
+    await expect(emptyMessage).toBeVisible();
 
     // 일기 카드가 없는지 확인
-    const diaryCards = await page.locator('[class*="diaryCard"]');
+    const diaryCards = await newPage.locator('[class*="diaryCard"]');
     await expect(diaryCards).toHaveCount(0);
+    
+    // 페이지 닫기
+    await newPage.close();
   });
 
   test('잘못된 데이터 형식일 때 빈 상태가 표시되는지 확인', async ({ page }) => {
-    // 잘못된 형식의 데이터 설정
-    await page.evaluate(() => {
+    // 새로운 페이지 컨텍스트에서 테스트 (beforeEach 우회)
+    const newPage = await page.context().newPage();
+    
+    // 페이지 로드 전에 잘못된 형식의 데이터 설정
+    await newPage.addInitScript(() => {
+      localStorage.clear();
       localStorage.setItem('diaries', 'invalid-json');
     });
 
-    // 페이지 새로고침
-    await page.reload();
-    await page.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
+    // 페이지로 이동
+    await newPage.goto('/diaries');
+    await newPage.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
+
+    // 에러 메시지 또는 빈 상태 메시지가 표시되는지 확인
+    const errorMessage = newPage.locator('text=오류가 발생했습니다');
+    const emptyMessage = newPage.locator('text=작성된 일기가 없습니다.');
+    
+    // 둘 중 하나가 표시되면 성공
+    const hasError = await errorMessage.isVisible();
+    const hasEmpty = await emptyMessage.isVisible();
+    
+    expect(hasError || hasEmpty).toBe(true);
 
     // 일기 카드가 없는지 확인
-    const diaryCards = await page.locator('[class*="diaryCard"]');
+    const diaryCards = await newPage.locator('[class*="diaryCard"]');
     await expect(diaryCards).toHaveCount(0);
+    
+    // 페이지 닫기
+    await newPage.close();
   });
 
   test('유효하지 않은 감정 타입이 포함된 데이터를 필터링하는지 확인', async ({ page }) => {
+    // 새로운 페이지 컨텍스트에서 테스트 (beforeEach 우회)
+    const newPage = await page.context().newPage();
+    
     // 유효하지 않은 감정 타입을 포함한 데이터
     const invalidData = [
       {
@@ -207,17 +237,22 @@ test.describe('Diaries 바인딩 훅 테스트', () => {
       }
     ];
 
-    await page.evaluate((data) => {
+    // 페이지 로드 전에 데이터 설정
+    await newPage.addInitScript((data) => {
+      localStorage.clear();
       localStorage.setItem('diaries', JSON.stringify(data));
     }, invalidData);
 
-    // 페이지 새로고침
-    await page.reload();
-    await page.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
+    // 페이지로 이동
+    await newPage.goto('/diaries');
+    await newPage.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
 
-    // 유효한 일기만 표시되는지 확인
-    const diaryCards = await page.locator('[class*="diaryCard"]');
+    // 유효한 일기만 표시되는지 확인 (1개)
+    const diaryCards = await newPage.locator('[class*="diaryCard"]');
     await expect(diaryCards).toHaveCount(1);
     await expect(diaryCards.first().locator('[class*="cardTitle"]')).toContainText('유효한 일기');
+    
+    // 페이지 닫기
+    await newPage.close();
   });
 });
