@@ -55,6 +55,7 @@ export const AuthSignup: React.FC = () => {
                   error={!!errors.email}
                   errorMessage={errors.email?.message}
                   aria-label="이메일"
+                  data-testid="email-input"
                 />
               </div>
 
@@ -72,6 +73,7 @@ export const AuthSignup: React.FC = () => {
               error={!!errors.password}
               errorMessage={errors.password?.message}
               aria-label="비밀번호"
+              data-testid="password-input"
             />
           </div>
 
@@ -89,6 +91,7 @@ export const AuthSignup: React.FC = () => {
               error={!!errors.passwordConfirm}
               errorMessage={errors.passwordConfirm?.message}
               aria-label="비밀번호 재입력"
+              data-testid="password-confirm-input"
             />
           </div>
 
@@ -106,6 +109,7 @@ export const AuthSignup: React.FC = () => {
               error={!!errors.name}
               errorMessage={errors.name?.message}
               aria-label="이름"
+              data-testid="name-input"
             />
           </div>
 
@@ -118,6 +122,7 @@ export const AuthSignup: React.FC = () => {
               type="submit"
               className={styles.submitButton}
               disabled={!isFormValid || isSubmitting}
+              data-testid="signup-button"
             >
               {isSubmitting ? '회원가입 중...' : '회원가입'}
             </Button>

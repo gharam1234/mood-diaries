@@ -12,12 +12,12 @@
 조건-파일경로) 참고할 API  문서경로: https://main-practice.codebootcamp.co.kr/graphql
 조건-파일경로) 참고할 TSX  파일경로: src/components/auth-signup/index.tsx
 조건-파일경로) 참고할 CSS  파일경로: src/components/auth-signup/styles.module.css
-조건-파일경로) 구현될 HOOK 파일경로: src/components/auth-signup/hooks/index.form.hook.tsx
-조건-파일경로) 구현될 TEST 파일경로: src/components/auth-signup/tests/index.form.hook.spec.ts
+조건-파일경로) 구현된 HOOK 파일경로: src/components/auth-signup/hooks/index.form.hook.tsx
+조건-파일경로) 구현된 TEST 파일경로: src/components/auth-signup/tests/index.form.hook.spec.ts
 
 ==============================================
 
-핵심요구사항) 다음의 기능을 playwright 테스트를 활용하여 TDD기반으로 구현하고, 테스트에 통과할 때까지 반복할 것.
+기존히스토리 참고만 -  핵심요구사항) 다음의 기능을 playwright 테스트를 활용하여 TDD기반으로 구현하고, 테스트에 통과할 때까지 반복할 것.
             1) 테스트 제외 라이브러리
                 - jest
                 - @testing-library/react
@@ -42,7 +42,7 @@
                 3-3) 실패시나리오
                     - API 모킹할 것.
 
-핵심요구사항) 다음의 조건에 맞게 회원가입 폼 등록 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
+기존히스토리 참고만 -  핵심요구사항) 다음의 조건에 맞게 회원가입 폼 등록 기능을 step-by-step 으로 구현하고, 적용 결과를 체크리스트로 반환할 것.
             1) 라이브러리조건
                 - 폼: 이미 설치되어있는 react-hook-form, @hookform/resolvers를 사용할 것.
                 - 검증: 이미 설치되어있는 zod를 사용할 것.
@@ -87,3 +87,13 @@
                         - 가입실패모달:
                             1. '확인' 클릭
                             2. 열려있는 모든 모달을 닫기
+==============================================
+
+핵심요구사항) 다음의 문제를 해결
+
+-현재 상황 : 회원가입은 되고 있는데 문제는 
+ "123123.1760940093790@123123.com" 이런식으로 뒤에 timestamp가 붙여진 상태로 회원가입이 되고 있
+
+-해결방향 : 테스트할때만 저런 방식으로 하고 실제 api요청시에는 timestamp가 없어야함
+
+

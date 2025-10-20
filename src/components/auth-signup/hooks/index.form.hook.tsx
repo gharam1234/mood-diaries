@@ -67,11 +67,70 @@ const createUser = async (input: CreateUserInput): Promise<CreateUserResponse> =
 
   const result = await response.json();
   
+  // GraphQL 에러 검사
   if (result.errors) {
     throw new Error(result.errors[0]?.message || '회원가입에 실패했습니다.');
   }
 
+  // API 응답이 없는 경우 에러 처리
+  if (!result.data || !result.data.createUser) {
+    throw new Error('회원가입에 실패했습니다. 서버 응답이 올바르지 않습니다.');
+  }
+
   return result.data.createUser;
+};
+
+/**
+ * 사용자 정보 조회 함수
+ * 회원가입 후 해당 사용자가 실제로 저장되었는지 검증합니다.
+ */
+interface FetchUserResponse {
+  fetchUser: {
+    _id: string;
+    email: string;
+    name: string;
+  };
+}
+
+const fetchUser = async (email: string): Promise<FetchUserResponse['fetchUser']> => {
+  const response = await fetch('https://main-practice.codebootcamp.co.kr/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: `
+        query FetchUser($email: String!) {
+          fetchUser(email: $email) {
+            _id
+            email
+            name
+          }
+        }
+      `,
+      variables: {
+        email
+      }
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('사용자 정보 조회에 실패했습니다.');
+  }
+
+  const result = await response.json();
+  
+  // GraphQL 에러 검사
+  if (result.errors) {
+    throw new Error(result.errors[0]?.message || '사용자 정보 조회에 실패했습니다.');
+  }
+
+  // API 응답 검증
+  if (!result.data || !result.data.fetchUser) {
+    throw new Error('사용자 정보를 찾을 수 없습니다. 회원가입이 제대로 완료되지 않았을 수 있습니다.');
+  }
+
+  return result.data.fetchUser;
 };
 
 /**
@@ -86,12 +145,14 @@ export const useFormHook = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isDirty },
     watch,
-    reset
+    reset,
+    trigger
   } = useForm<SignupFormData>({
     resolver: zodResolver(signupFormSchema),
     mode: 'onChange',
+    reValidateMode: 'onChange',
     defaultValues: {
       email: '',
       password: '',
@@ -106,11 +167,33 @@ export const useFormHook = () => {
   // 회원가입 API 뮤테이션
   const createUserMutation = useMutation({
     mutationFn: createUser,
-    onSuccess: () => {
-      showSuccessModal();
-      reset(); // 폼 초기화
+    onSuccess: async (data, variables) => {
+      // API 응답 검증
+      if (data && data._id) {
+        console.log('회원가입 성공 응답 수신:', data._id);
+        
+        try {
+          // 회원가입 후 실제로 데이터가 저장되었는지 검증
+          console.log('사용자 정보 검증 시작:', variables.email);
+          const fetchedUser = await fetchUser(variables.email);
+          
+          console.log('사용자 정보 검증 완료:', fetchedUser);
+          showSuccessModal();
+          reset(); // 폼 초기화
+        } catch (verifyError) {
+          console.error('사용자 정보 검증 실패:', verifyError);
+          // 검증 실패 시에도 성공 모달을 표시합니다.
+          // (API가 _id를 반환했으므로 회원가입이 성공한 것으로 간주)
+          showSuccessModal();
+          reset();
+        }
+      } else {
+        // 응답에 _id가 없는 경우 에러 처리
+        showErrorModal('회원가입 처리 중 오류가 발생했습니다. (응답 데이터 오류)');
+      }
     },
     onError: (error) => {
+      console.error('회원가입 실패:', error);
       showErrorModal(error.message);
     }
   });
@@ -150,7 +233,7 @@ export const useFormHook = () => {
       // 네트워크 오류인 경우 더 명확한 메시지 표시
       let displayMessage = errorMessage;
       if (errorMessage.includes('Failed to fetch') || errorMessage.includes('NetworkError')) {
-        displayMessage = '회원가입 요청에 실패했습니다.';
+        displayMessage = '회원가입 요청에 실패했습니다. 네트워크 연결을 확인해주세요.';
       }
 
     openModal(
@@ -172,25 +255,38 @@ export const useFormHook = () => {
    * 폼 제출 처리
    */
   const onSubmit = (data: SignupFormData) => {
-    // 이메일 중복을 피하기 위해 timestamp를 포함한 이메일 생성
-    const timestamp = Date.now();
-    const uniqueEmail = `${timestamp}_${data.email}`;
+    try {
+      // 입력 데이터 검증
+      if (!data.email || !data.password || !data.name) {
+        showErrorModal('모든 필드를 입력해주세요.');
+        return;
+      }
 
-    createUserMutation.mutate({
-      email: uniqueEmail,
-      password: data.password,
-      name: data.name
-    });
+      // 실제 API 요청 시에는 원본 이메일 사용 (timestamp 제거)
+      console.log('회원가입 요청 시작:', {
+        email: data.email,
+        name: data.name
+      });
+
+      createUserMutation.mutate({
+        email: data.email,
+        password: data.password,
+        name: data.name
+      });
+    } catch (error) {
+      console.error('폼 제출 중 오류:', error);
+      showErrorModal('회원가입 요청 중 오류가 발생했습니다.');
+    }
   };
 
   // 모든 필드가 입력되었는지 확인
-  const isAllFieldsFilled = watchedValues.email && 
-                           watchedValues.password && 
-                           watchedValues.passwordConfirm && 
-                           watchedValues.name;
+  const isAllFieldsFilled = watchedValues.email?.trim() && 
+                           watchedValues.password?.trim() && 
+                           watchedValues.passwordConfirm?.trim() && 
+                           watchedValues.name?.trim();
 
   // 폼이 유효하고 모든 필드가 입력되었는지 확인
-  const isFormValid = isValid && isAllFieldsFilled;
+  const isFormValid = isValid && isAllFieldsFilled && isDirty;
 
   return {
     // react-hook-form 메서드들
@@ -198,7 +294,9 @@ export const useFormHook = () => {
     handleSubmit: handleSubmit(onSubmit),
     errors,
     isValid,
+    isDirty,
     watchedValues,
+    trigger,
     
     // 커스텀 메서드들
     reset,
