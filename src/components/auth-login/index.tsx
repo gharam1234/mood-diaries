@@ -3,6 +3,7 @@
 import React from 'react';
 import { Input } from '@/commons/components/input';
 import { Button } from '@/commons/components/button';
+import { useLoginForm } from './hooks/index.form.hook';
 import styles from './styles.module.css';
 
 /**
@@ -19,8 +20,10 @@ import styles from './styles.module.css';
  * ```
  */
 export const AuthLogin: React.FC = () => {
+  const { form, onSubmit, isFormValid, isSubmitting, errors } = useLoginForm();
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="auth-login-page">
       <div className={styles.wrapper}>
         {/* 헤더 섹션 */}
         <div className={styles.header}>
@@ -31,7 +34,7 @@ export const AuthLogin: React.FC = () => {
         </div>
 
         {/* 폼 섹션 */}
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={form.handleSubmit(onSubmit)}>
           {/* 이메일 입력 */}
           <div className={styles.inputGroup}>
             <Input
@@ -42,6 +45,9 @@ export const AuthLogin: React.FC = () => {
               type="email"
               placeholder="이메일을 입력하세요"
               className={styles.input}
+              {...form.register('email')}
+              error={!!errors.email}
+              errorMessage={errors.email?.message}
             />
           </div>
 
@@ -55,6 +61,9 @@ export const AuthLogin: React.FC = () => {
               type="password"
               placeholder="비밀번호를 입력하세요"
               className={styles.input}
+              {...form.register('password')}
+              error={!!errors.password}
+              errorMessage={errors.password?.message}
             />
           </div>
 
@@ -66,8 +75,9 @@ export const AuthLogin: React.FC = () => {
               size="medium"
               type="submit"
               className={styles.loginButton}
+              disabled={!isFormValid || isSubmitting}
             >
-              로그인
+              {isSubmitting ? '로그인 중...' : '로그인'}
             </Button>
           </div>
         </form>
