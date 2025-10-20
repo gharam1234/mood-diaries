@@ -1,0 +1,141 @@
+/* AuthLogin 컴포넌트 스타일 */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-background-secondary);
+  padding: 1rem;
+}
+
+.wrapper {
+  width: 100%;
+  max-width: 400px;
+  background: var(--color-background-primary);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-family: var(--font-family-default);
+  font-size: var(--typography-headline01-fontSize);
+  line-height: var(--typography-headline01-lineHeight);
+  font-weight: var(--typography-headline01-fontWeight);
+  color: var(--color-text-primary);
+  margin: 0 0 0.5rem 0;
+}
+
+.subtitle {
+  font-family: var(--font-family-default);
+  font-size: var(--typography-body02_m-fontSize);
+  line-height: var(--typography-body02_m-lineHeight);
+  font-weight: var(--typography-body02_m-fontWeight);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  width: 100%;
+}
+
+.buttonGroup {
+  margin-top: 0.5rem;
+}
+
+.loginButton {
+  width: 100%;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-border-secondary);
+}
+
+.signupText {
+  font-family: var(--font-family-default);
+  font-size: var(--typography-body02_s_regular-fontSize);
+  line-height: var(--typography-body02_s_regular-lineHeight);
+  font-weight: var(--typography-body02_s_regular-fontWeight);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.signupLink {
+  font-family: var(--font-family-default);
+  color: var(--color-interactive-primary);
+  text-decoration: none;
+  font-weight: var(--font-weight-medium);
+  transition: color 0.2s ease;
+}
+
+.signupLink:hover {
+  color: var(--color-interactive-primary-hover);
+  text-decoration: underline;
+}
+
+.signupLink:focus {
+  outline: 2px solid var(--color-interactive-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  .wrapper {
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: var(--typography-headline02-fontSize);
+    line-height: var(--typography-headline02-lineHeight);
+  }
+
+  .form {
+    gap: 1.25rem;
+  }
+}
+
+/* 다크 모드 지원 */
+@media (prefers-color-scheme: dark) {
+  .wrapper {
+    background: var(--color-background-primary);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .footer {
+    border-top-color: var(--color-border-primary);
+  }
+}
+
+[data-theme='dark'] .wrapper {
+  background: var(--color-background-primary);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .footer {
+  border-top-color: var(--color-border-primary);
+}
