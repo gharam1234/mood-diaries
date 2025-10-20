@@ -1,9 +1,10 @@
 "use client"
 
 import React from 'react';
+import styles from './styles.module.css';
 import { Input } from '@/commons/components/input';
 import { Button } from '@/commons/components/button';
-import styles from './styles.module.css';
+import { useFormHook } from './hooks/index.form.hook';
 
 /**
  * AuthSignup 컴포넌트
@@ -19,8 +20,16 @@ import styles from './styles.module.css';
  * ```
  */
 export const AuthSignup: React.FC = () => {
+  const {
+    register,
+    handleSubmit,
+    errors,
+    isFormValid,
+    isSubmitting
+  } = useFormHook();
+
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-testid="auth-signup-page">
       <div className={styles.wrapper}>
         {/* 헤더 섹션 */}
         <div className={styles.header}>
@@ -31,23 +40,28 @@ export const AuthSignup: React.FC = () => {
         </div>
 
         {/* 폼 섹션 */}
-        <form className={styles.form}>
+        <form className={styles.form} onSubmit={handleSubmit}>
           {/* 이메일 입력 */}
-          <div className={styles.inputGroup}>
-            <Input
-              variant="primary"
-              theme="light"
-              size="medium"
-              label="이메일"
-              type="email"
-              placeholder="이메일을 입력하세요"
-              className={styles.input}
-            />
-          </div>
+              <div className={styles.inputGroup}>
+                <Input
+                  {...register('email')}
+                  variant="primary"
+                  theme="light"
+                  size="medium"
+                  label="이메일"
+                  type="email"
+                  placeholder="이메일을 입력하세요"
+                  className={styles.input}
+                  error={!!errors.email}
+                  errorMessage={errors.email?.message}
+                  aria-label="이메일"
+                />
+              </div>
 
           {/* 비밀번호 입력 */}
           <div className={styles.inputGroup}>
             <Input
+              {...register('password')}
               variant="primary"
               theme="light"
               size="medium"
@@ -55,12 +69,16 @@ export const AuthSignup: React.FC = () => {
               type="password"
               placeholder="비밀번호를 입력하세요"
               className={styles.input}
+              error={!!errors.password}
+              errorMessage={errors.password?.message}
+              aria-label="비밀번호"
             />
           </div>
 
           {/* 비밀번호 재입력 */}
           <div className={styles.inputGroup}>
             <Input
+              {...register('passwordConfirm')}
               variant="primary"
               theme="light"
               size="medium"
@@ -68,12 +86,16 @@ export const AuthSignup: React.FC = () => {
               type="password"
               placeholder="비밀번호를 다시 입력하세요"
               className={styles.input}
+              error={!!errors.passwordConfirm}
+              errorMessage={errors.passwordConfirm?.message}
+              aria-label="비밀번호 재입력"
             />
           </div>
 
           {/* 이름 입력 */}
           <div className={styles.inputGroup}>
             <Input
+              {...register('name')}
               variant="primary"
               theme="light"
               size="medium"
@@ -81,6 +103,9 @@ export const AuthSignup: React.FC = () => {
               type="text"
               placeholder="이름을 입력하세요"
               className={styles.input}
+              error={!!errors.name}
+              errorMessage={errors.name?.message}
+              aria-label="이름"
             />
           </div>
 
@@ -92,8 +117,9 @@ export const AuthSignup: React.FC = () => {
               size="medium"
               type="submit"
               className={styles.submitButton}
+              disabled={!isFormValid || isSubmitting}
             >
-              회원가입
+              {isSubmitting ? '회원가입 중...' : '회원가입'}
             </Button>
           </div>
         </form>
