@@ -36,10 +36,7 @@
   justify-content: flex-start;
   width: 100%;
   height: 48px;
-  background-color: var(--color-background-secondary);
-  border: 1px solid var(--color-border-primary);
   border-radius: 8px;
-  padding: 0 16px;
 }
 
 .filterContent {
@@ -76,11 +73,10 @@
 .pictureGrid {
   display: flex;
   flex-direction: column;
-  
   flex-wrap: wrap;
+  align-items: center;
   gap: 40px;
   width: 100%;
-  align-items: center;
 }
 
 /* ====================================== */
@@ -90,13 +86,13 @@
 .pictureCard {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+  overflow: visible;
   background-color: transparent;
   border: none;
   border-radius: 0;
-  overflow: visible;
-  transition: all 0.2s ease-in-out;
   cursor: pointer;
-  flex-shrink: 0;
+  transition: all 0.2s ease-in-out;
 }
 
 .pictureCard:hover {

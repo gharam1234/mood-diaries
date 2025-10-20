@@ -8,7 +8,7 @@ import styles from './styles.module.css';
 
 /**
  * Pictures 컴포넌트 - 피그마 디자인을 기반으로 한 강아지 사진 갤러리
- * 필터 기능과 반응형 그리드 레이아웃을 제공합니다.
+ * 필터 기능과 반응형 레이아웃을 제공합니다.
  */
 const Pictures: React.FC = () => {
   // 필터 상태 관리
