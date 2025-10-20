@@ -5,6 +5,7 @@ import Image from 'next/image';
 import styles from './styles.module.css';
 import { useLinkRouting } from './hooks/index.link.routing.hook';
 import { useAreaVisibility } from './hooks/index.area.hook';
+import { useAuthHook } from './hooks/index.auth.hook';
 import { Button } from '../components/button';
 
 // Layout 컴포넌트 Props 타입 정의
@@ -29,59 +30,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   // URL 기반 영역 노출 여부 가져오기
   const areaVisibility = useAreaVisibility();
 
-  // 로컬스토리지에서 사용자 이름 가져오기
-  const [userName, setUserName] = React.useState<string>('');
-
-  // 로컬스토리지에서 사용자 정보를 가져오는 함수
-  const loadUserName = React.useCallback(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const userData = localStorage.getItem('user');
-        if (userData) {
-          const parsedUser = JSON.parse(userData);
-          setUserName(parsedUser.name || '');
-        } else {
-          setUserName('');
-        }
-      } catch (error) {
-        console.error('로컬스토리지에서 사용자 데이터를 가져오는 중 오류 발생:', error);
-        setUserName('');
-      }
-    }
-  }, []);
-
-  React.useEffect(() => {
-    // 초기 로드
-    loadUserName();
-
-    // 로컬스토리지 변경 감지 (다른 탭에서의 변경 감지)
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'user') {
-        loadUserName();
-      }
-    };
-
-    // 커스텀 이벤트 감지 (같은 탭에서의 변경 감지)
-    const handleUserDataChange = () => {
-      loadUserName();
-    };
-
-    // 주기적 체크 (1초마다)
-    const intervalId = setInterval(() => {
-      loadUserName();
-    }, 1000);
-
-    // 이벤트 리스너 등록
-    window.addEventListener('storage', handleStorageChange);
-    window.addEventListener('userDataChanged', handleUserDataChange);
-
-    return () => {
-      // 이벤트 리스너 제거
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('userDataChanged', handleUserDataChange);
-      clearInterval(intervalId);
-    };
-  }, [loadUserName]);
+  // 인증 상태 및 핸들러 가져오기
+  const { isLoggedIn, userName, handleLoginClick, handleLogoutClick } = useAuthHook();
 
   return (
     <div className={styles.layout} data-testid="layout-container">
@@ -96,7 +46,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           
           {/* 인증 상태 UI - 로그인/비로그인 상태 구분 */}
           <div className={styles.authStatus}>
-            {userName ? (
+            {isLoggedIn ? (
               // 로그인 상태: 사용자 이름 + 로그아웃 버튼
               <>
                 <span className={styles.userName}>
@@ -107,6 +57,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   theme="light"
                   size="medium"
                   className={styles.logoutButton}
+                  onClick={handleLogoutClick}
+                  data-testid="logout-button"
                 >
                   로그아웃
                 </Button>
@@ -118,6 +70,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                 theme="light"
                 size="medium"
                 className={styles.loginButton}
+                onClick={handleLoginClick}
+                data-testid="login-button"
               >
                 로그인
               </Button>

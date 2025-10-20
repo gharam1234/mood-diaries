@@ -8,6 +8,8 @@ import { useModal } from '@/commons/providers/modal/modal.provider';
 import { Modal } from '@/commons/components/modal';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { useAuth } from '@/commons/providers/auth/auth.provider';
+import { PATHS } from '@/commons/constants/url';
 
 // 로그인 폼 스키마 정의
 const loginSchema = z.object({
@@ -112,6 +114,7 @@ const fetchUserLoggedIn = async (accessToken: string): Promise<UserResponse> => 
 export const useLoginForm = () => {
   const router = useRouter();
   const { openModal, closeAll } = useModal();
+  const { login } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // 폼 설정
@@ -129,27 +132,27 @@ export const useLoginForm = () => {
     mutationFn: loginUser,
     onSuccess: async (data) => {
       try {
-        // accessToken을 로컬스토리지에 저장
-        localStorage.setItem('accessToken', data.loginUser.accessToken);
-
         // 사용자 정보 조회
         const userData = await fetchUserLoggedIn(data.loginUser.accessToken);
         
-        // 사용자 정보를 로컬스토리지에 저장
-        localStorage.setItem('user', JSON.stringify({
-          _id: userData.fetchUserLoggedIn._id,
+        // 사용자 데이터 구조화
+        const userInfo = {
+          id: userData.fetchUserLoggedIn._id, // AuthProvider User 타입(id) 충족
+          _id: userData.fetchUserLoggedIn._id, // 테스트에서 사용하는 키와도 일치
+          email: '', // 이메일은 로그인 폼에서 가져올 수 있지만, 현재 API에서는 제공하지 않음
           name: userData.fetchUserLoggedIn.name,
-        }));
+        };
 
-        // 커스텀 이벤트 발생 (같은 탭에서의 변경 감지)
-        window.dispatchEvent(new CustomEvent('userDataChanged'));
+        // Auth 컨텍스트의 login 함수를 호출하여 즉시 상태 갱신
+        // 이렇게 하면 레이아웃의 인증 UI가 새로고침 없이 즉시 업데이트됩니다
+        login(userInfo, data.loginUser.accessToken);
 
         // 로그인 완료 모달 표시
         const handleSuccessConfirm = () => {
           closeAll();
           // 모달이 완전히 닫힌 후 페이지 이동
           setTimeout(() => {
-            router.push('/diaries');
+            router.push(PATHS.DIARIES.LIST);
           }, 100);
         };
 

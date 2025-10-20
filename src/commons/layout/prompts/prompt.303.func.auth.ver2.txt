@@ -1,0 +1,78 @@
+아래의 조건을 모두 적용하여, 아래의 요구사항을 모두 구현할 것.
+구현 결과를 체크리스트로 반환할 것.
+
+==============================================
+
+조건-커서룰) 아래의 커서룰을 적용하여 작업하고, 이 작업이 끝나면 해당 rules 적용 결과를 체크리스트로 반환할 것.
+            - @01-common.mdc
+            - @04-func.mdc
+
+==============================================
+
+조건-파일경로) 참고 AuthProvider 경로: src/commons/providers/auth/auth.provider.tsx
+조건-파일경로) 구현 대상: "로그인 성공 처리를 담당하는 제출 핸들러(Submit Handler)가 정의된 파일" (auth 로그인 페이지/폼 컴포넌트)
+조건-파일경로) 레이아웃은 수정하지 말 것. (src/commons/layout/index.tsx 변경 금지)
+
+==============================================
+
+핵심요구사항) "새로고침 없이" 로그인 직후 레이아웃의 인증 UI가 즉시 업데이트되어,
+            로그인버튼이 사라지고 사용자이름/로그아웃버튼이 바로 보이도록 할 것.
+
+구현지침)
+  1) AuthProvider 수정 금지. (src/commons/providers/auth/auth.provider.tsx 그대로 사용할 것)
+  2) 로그인 성공 시점의 제출 핸들러에서 아래를 적용할 것.
+     - 로컬스토리지 직접 쓰기/관리 로직을 제거하거나 비활성화할 것.
+     - Auth 컨텍스트 훅(useAuth)의 login(userData, accessToken)을 "즉시" 호출하여 컨텍스트 상태를 갱신할 것.
+     - 라우팅은 login(...) 호출 이후에 수행할 것. (예: router.push(PATHS.DIARIES.ROOT))
+     - 동일 탭 갱신을 위한 커스텀 이벤트(window.dispatchEvent(new CustomEvent('userDataChanged')))는
+       컨텍스트 login(...) 호출이 즉시 반영을 보장하므로 추가하지 말 것.
+  3) 기존 성공 모달/알림 흐름이 있다면 그대로 유지하되, 모달 확인 이후 이동 순서를 지킬 것.
+  4) 레이아웃은 이미 컨텍스트를 구독 중이라고 가정하며, 레이아웃 파일은 수정하지 말 것.
+
+제출핸들러 예시-가이드(참고용: 주석은 한국어로 유지, 실제 파일 내 위치/이름에 맞게 적용할 것)
+  - 아래 예시는 "핵심 구현 아이디어"만을 나타내며, 파일/함수명은 실제 구현에 맞게 조정할 것.
+
+```ts
+// 예시: 로그인 폼 제출 핸들러 내부
+// 주의: 실제 파일/컴포넌트 명세에 맞게 반영할 것.
+import { useAuth } from '@/commons/providers/auth/auth.provider';
+import { PATHS } from '@/commons/constants/url';
+import { useRouter } from 'next/navigation';
+
+// ...
+const { login } = useAuth();
+const router = useRouter();
+
+async function onSubmit(formValues: { email: string; password: string }) {
+  // 1) 서버 로그인 요청
+  //    - 실제 API 호출 로직을 사용하고, 응답에서 user, accessToken을 확보할 것.
+  const { userData, accessToken } = await doLoginRequest(formValues); // 실제 구현 함수
+
+  // 2) 컨텍스트 상태를 즉시 갱신
+  //    - 로컬스토리지 직접 접근 대신, 컨텍스트의 login(...)을 호출하여
+  //      isLoggedIn/user가 즉시 갱신되도록 할 것.
+  login(userData, accessToken); // 로그인 직후 레이아웃 인증 UI가 즉시 반영됨
+
+  // 3) 필요 시 성공 모달 표시 로직 유지 (있다면)
+  //    - 모달 확인 이후에 라우팅하도록 순서를 유지할 것.
+  // showSuccessModal?.();
+
+  // 4) 라우팅은 컨텍스트 갱신 이후 실행
+  router.push(PATHS.DIARIES.ROOT);
+}
+```
+
+테스트요구사항)
+  - playwright.config.ts는 변경하지 말 것.
+  - data-testid 기반으로만 로드/상태를 식별할 것. (networkidle 금지)
+  - Mock 데이터 금지, 실제 데이터 사용.
+  - timeout은 설정하지 않거나 500ms 미만.
+  - 시나리오:
+    1) /auth/login 접속 → 로그인 시도(실제 계정) → 모달 확인(있을 경우) → /diaries 이동
+    2) 새로고침 없이 즉시 레이아웃에서 사용자이름/로그아웃버튼 노출 확인
+    3) 로그인버튼이 즉시 사라졌는지 확인
+
+반환물)
+  - 적용 파일 목록과 변경 포인트 요약
+  - 위 커서룰(@01, @04) 준수 체크리스트
+  - 테스트 시나리오 체크리스트
