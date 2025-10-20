@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   background: var(--color-background-secondary);
-  padding: 1rem;
+  padding: 16px;
 }
 
 .wrapper {
@@ -15,12 +15,12 @@
   background: var(--color-background-primary);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  padding: 2rem;
+  padding: 32px;
 }
 
 .header {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
 }
 
 .title {
@@ -29,7 +29,7 @@
   line-height: var(--typography-headline01-lineHeight);
   font-weight: var(--typography-headline01-fontWeight);
   color: var(--color-text-primary);
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
 }
 
 .subtitle {
@@ -44,7 +44,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 24px;
 }
 
 .inputGroup {
@@ -57,7 +57,7 @@
 }
 
 .buttonGroup {
-  margin-top: 0.5rem;
+  margin-top: 8px;
 }
 
 .loginButton {
@@ -66,8 +66,8 @@
 
 .footer {
   text-align: center;
-  margin-top: 2rem;
-  padding-top: 1.5rem;
+  margin-top: 32px;
+  padding-top: 24px;
   border-top: 1px solid var(--color-border-secondary);
 }
 
@@ -102,11 +102,11 @@
 /* 반응형 디자인 */
 @media (max-width: 768px) {
   .container {
-    padding: 0.5rem;
+    padding: 8px;
   }
 
   .wrapper {
-    padding: 1.5rem;
+    padding: 24px;
   }
 
   .title {
@@ -115,7 +115,7 @@
   }
 
   .form {
-    gap: 1.25rem;
+    gap: 20px;
   }
 }
 
