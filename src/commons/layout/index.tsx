@@ -32,14 +32,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   // 로컬스토리지에서 사용자 이름 가져오기
   const [userName, setUserName] = React.useState<string>('');
 
-  React.useEffect(() => {
-    // 클라이언트 사이드에서만 실행
+  // 로컬스토리지에서 사용자 정보를 가져오는 함수
+  const loadUserName = React.useCallback(() => {
     if (typeof window !== 'undefined') {
       try {
         const userData = localStorage.getItem('user');
         if (userData) {
           const parsedUser = JSON.parse(userData);
           setUserName(parsedUser.name || '');
+        } else {
+          setUserName('');
         }
       } catch (error) {
         console.error('로컬스토리지에서 사용자 데이터를 가져오는 중 오류 발생:', error);
@@ -47,6 +49,23 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
       }
     }
   }, []);
+
+  React.useEffect(() => {
+    // 초기 로드
+    loadUserName();
+
+    // 로컬스토리지 변경 감지 (다른 탭에서의 변경 감지)
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'user') {
+        loadUserName();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, [loadUserName]);
 
   return (
     <div className={styles.layout} data-testid="layout-container">
