@@ -133,6 +133,7 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       aria-labelledby="modal-title"
       aria-describedby="modal-message"
+      data-testid={variant === 'info' ? 'success-modal' : 'error-modal'}
     >
         {/* 모달 콘텐츠 영역 */}
         <div className={styles.modalContent}>

@@ -49,7 +49,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             {isLoggedIn ? (
               // 로그인 상태: 사용자 이름 + 로그아웃 버튼
               <>
-                <span className={styles.userName}>
+                <span className={styles.userName} data-testid="user-name">
                   {userName}님
                 </span>
                 <Button

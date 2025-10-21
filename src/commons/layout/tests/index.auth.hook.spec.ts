@@ -52,8 +52,8 @@ test.describe('Layout Auth Hook Tests', () => {
       // 페이지 로드 확인
       await expect(page.locator('[data-testid="layout-container"]')).toBeVisible();
       
-      // 로그인 버튼이 표시되는지 확인
-      await expect(page.locator('[data-testid="login-button"]')).toBeVisible();
+      // 로그인 페이지의 폼 버튼이 표시되는지 확인 (header가 숨겨져 있으므로)
+      await expect(page.locator('button[type="submit"]')).toBeVisible();
     });
 
     test('로그인 시도 및 성공', async ({ page }) => {
@@ -70,7 +70,7 @@ test.describe('Layout Auth Hook Tests', () => {
       // 로그인 성공 후 완료 모달이 표시되는지 확인
       await expect(page.locator('[data-testid="success-modal"]')).toBeVisible();
       
-      // 완료 모달 클릭
+      // 완료 모달의 확인 버튼 클릭
       await page.click('[data-testid="success-modal"] button');
       
       // /diaries 페이지로 이동했는지 확인
@@ -89,8 +89,8 @@ test.describe('Layout Auth Hook Tests', () => {
       await expect(page).toHaveURL('/diaries');
       
       // 사용자 이름이 표시되는지 확인
-      await expect(page.locator('.userName')).toBeVisible();
-      await expect(page.locator('.userName')).toContainText('님');
+      await expect(page.locator('[data-testid="user-name"]')).toBeVisible();
+      await expect(page.locator('[data-testid="user-name"]')).toContainText('님');
       
       // 로그아웃 버튼이 표시되는지 확인
       await expect(page.locator('[data-testid="logout-button"]')).toBeVisible();
