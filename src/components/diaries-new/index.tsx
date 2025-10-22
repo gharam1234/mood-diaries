@@ -33,7 +33,7 @@ const DiariesNew: React.FC = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.wrapper}>
+    <form onSubmit={handleSubmit} className={styles.wrapper} data-testid="diaries-new-container">
       {/* 헤더 영역 */}
       <div className={styles.header}>
         <h1 className={styles.headerTitle}>일기 쓰기</h1>

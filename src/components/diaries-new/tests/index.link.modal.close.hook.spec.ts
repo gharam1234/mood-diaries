@@ -7,6 +7,11 @@ import { test, expect } from '@playwright/test'
 // - 등록 취소: 자식과 부모 모두 닫힘
 
 test('일기쓰기 닫기 플로우: 자식 모달 오버레이 및 닫힘 동작', async ({ page }) => {
+  // 테스트 환경에서 로그인 검사 우회 (액션GUARD 무시)
+  await page.addInitScript(() => {
+    window.__TEST_BYPASS__ = true;
+  });
+
   // 페이지 진입
   await page.goto('/diaries')
 

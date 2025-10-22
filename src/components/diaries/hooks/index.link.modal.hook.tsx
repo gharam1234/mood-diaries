@@ -2,6 +2,7 @@
 
 import React, { useCallback } from 'react'
 import { useModal } from '../../../commons/providers/modal/modal.provider'
+import { useAuthGuard } from '../../../commons/providers/auth/auth.guard.hook'
 import DiariesNew from '../../diaries-new'
 
 /**
@@ -23,6 +24,7 @@ export interface ModalLinkHookReturn {
  * - DiariesNew 컴포넌트를 모달로 표시
  * - 기존 modal.provider 활용
  * - 모달 상태 관리 및 제어
+ * - 권한검사 기능 통합 (액션GUARD)
  * 
  * @returns 모달 제어 함수들과 상태
  * @example
@@ -38,9 +40,12 @@ export interface ModalLinkHookReturn {
  */
 export const useModalLink = (): ModalLinkHookReturn => {
   const { openModal, closeTop, isAnyOpen } = useModal()
+  const { guardAuth } = useAuthGuard()
 
   /**
    * 일기쓰기 모달을 엽니다
+   * 권한검사를 통과한 경우에만 모달을 표시합니다.
+   * 비로그인 사용자에게는 로그인 요청 모달이 표시됩니다.
    * 
    * @example
    * ```tsx
@@ -48,8 +53,14 @@ export const useModalLink = (): ModalLinkHookReturn => {
    * ```
    */
   const openWriteDiaryModal = useCallback(() => {
-    openModal(<DiariesNew />)
-  }, [openModal])
+    // 권한검사 실행
+    const isAuthenticated = guardAuth()
+    
+    // 로그인된 사용자만 일기쓰기 모달 표시
+    if (isAuthenticated) {
+      openModal(<DiariesNew />)
+    }
+  }, [openModal, guardAuth])
 
   /**
    * 모달을 닫습니다
