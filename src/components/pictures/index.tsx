@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { SelectBox } from '@/commons/components/selectbox';
 import { useDogImages, useInfiniteScroll, DogImage } from './hooks/index.binding.hook';
+import { useImageSizeFilter } from './hooks/index.filter.hook';
 import styles from './styles.module.css';
 
 /**
@@ -15,8 +16,12 @@ import styles from './styles.module.css';
  * 
  * @returns {JSX.Element} 스플래시 스크린 JSX 요소
  */
-const SplashScreen: React.FC = () => (
-  <div className={styles.splashScreen} data-testid="splash-screen">
+const SplashScreen: React.FC<{ width: number; height: number }> = ({ width, height }) => (
+  <div
+    className={styles.splashScreen}
+    data-testid="splash-screen"
+    style={{ width: `${width}px`, height: `${height}px` }}
+  >
   </div>
 );
 
@@ -52,14 +57,14 @@ const ErrorState: React.FC<{ onRetry: () => void }> = ({ onRetry }) => (
  * @param {DogImage} props.dog - 강아지 이미지 데이터
  * @returns {JSX.Element} 강아지 이미지 카드 JSX 요소
  */
-const DogImageCard: React.FC<{ dog: DogImage }> = ({ dog }) => (
+const DogImageCard: React.FC<{ dog: DogImage; width: number; height: number }> = ({ dog, width, height }) => (
   <div className={styles.pictureCard}>
-    <div className={styles.pictureImageContainer}>
+    <div className={styles.pictureImageContainer} style={{ width: `${width}px`, height: `${height}px` }}>
       <Image
         src={dog.imageUrl}
         alt={`강아지 사진 - ${dog.breed || 'unknown'}`}
-        width={640}
-        height={640}
+        width={width}
+        height={height}
         className={styles.pictureImage}
         data-testid="dog-image"
         priority={false}
@@ -85,8 +90,8 @@ const DogImageCard: React.FC<{ dog: DogImage }> = ({ dog }) => (
  * @returns {JSX.Element} Pictures 컴포넌트 JSX 요소
  */
 const Pictures: React.FC = () => {
-  // 필터 상태 관리
-  const [selectedFilter, setSelectedFilter] = useState<string>('all');
+  // 이미지 크기 필터 훅 사용
+  const { selectedFilter, currentImageSize, filterOptions, handleFilterChange } = useImageSizeFilter();
 
   // 강아지 이미지 데이터 조회
   const {
@@ -110,27 +115,8 @@ const Pictures: React.FC = () => {
     };
   }, [handleScroll]);
 
-  // 필터링된 강아지 사진 데이터
-  const filteredPictures = useMemo(() => {
-    if (selectedFilter === 'all') {
-      return dogImages;
-    }
-    return dogImages.filter(dog => dog.breed === selectedFilter);
-  }, [dogImages, selectedFilter]);
-
-  // 필터 옵션 생성 (실제 데이터 기반)
-  const filterOptions = useMemo(() => {
-    const breeds = Array.from(new Set(dogImages.map(dog => dog.breed).filter(Boolean))) as string[];
-    return [
-      { value: 'all', label: '전체' },
-      ...breeds.map(breed => ({ value: breed, label: breed }))
-    ];
-  }, [dogImages]);
-
-  // 필터 변경 핸들러
-  const handleFilterChange = (value: string) => {
-    setSelectedFilter(value);
-  };
+  // 이미지 목록은 사이즈 필터와 무관하므로 전체 사용
+  const filteredPictures = useMemo(() => dogImages, [dogImages]);
 
   // 재시도 핸들러
   const handleRetry = () => {
@@ -152,7 +138,7 @@ const Pictures: React.FC = () => {
             options={filterOptions}
             value={selectedFilter}
             onChange={handleFilterChange}
-            placeholder="강아지 종류를 선택하세요"
+            placeholder="이미지 크기를 선택하세요"
             className={styles.filterSelectBox}
           />
         </div>
@@ -167,7 +153,7 @@ const Pictures: React.FC = () => {
         {isLoading && (
           <div className={styles.splashGrid}>
             {Array.from({ length: 6 }).map((_, index) => (
-              <SplashScreen key={index} />
+              <SplashScreen key={index} width={currentImageSize.width} height={currentImageSize.height} />
             ))}
           </div>
         )}
@@ -181,14 +167,14 @@ const Pictures: React.FC = () => {
         {!isLoading && !isError && filteredPictures.length > 0 && (
           <div className={styles.pictureGrid}>
             {filteredPictures.map((dog: DogImage) => (
-              <DogImageCard key={dog.id} dog={dog} />
+              <DogImageCard key={dog.id} dog={dog} width={currentImageSize.width} height={currentImageSize.height} />
             ))}
             
             {/* 추가 로딩 중 스플래시 스크린 */}
             {isFetchingNextPage && (
               <>
                 {Array.from({ length: 6 }).map((_, index) => (
-                  <SplashScreen key={`loading-${index}`} />
+                  <SplashScreen key={`loading-${index}`} width={currentImageSize.width} height={currentImageSize.height} />
                 ))}
               </>
             )}

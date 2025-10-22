@@ -11,6 +11,8 @@ import { EmotionType, getEmotionData } from '@/commons/constants/enum';
 import { useModalLink } from './hooks/index.link.modal.hook';
 import { useDiaryBinding, DiaryData as BindingDiaryData } from './hooks/index.binding.hook';
 import { useLinkRouting } from './hooks/index.link.routing.hook';
+import { useDiarySearch } from './hooks/index.search.hook';
+import { useDiaryFilter } from './hooks/index.filter.hook';
 
 /**
  * 일기 카드 표시용 데이터 타입
@@ -157,32 +159,41 @@ export const Diaries: React.FC = () => {
   
   // 바인딩 훅 사용
   const { diaries, loading, error } = useDiaryBinding();
-  
+  // 검색 훅 사용
+  const { filteredDiaries: searchFilteredDiaries, setSearchTerm } = useDiarySearch(diaries);
+  // 필터 훅 사용
+  const { filteredDiaries: filterFilteredDiaries, selectedFilter, setSelectedFilter, filterOptions } = useDiaryFilter(searchFilteredDiaries);
+
+  // 검색어 입력값 상태 (컨트롤드 인풋)
+  const [searchInput, setSearchInput] = React.useState('');
+
   // 링크 라우팅 훅 사용
   const { navigateToDiaryDetail } = useLinkRouting();
-  
+
   // 페이지네이션 상태
   const [currentPage, setCurrentPage] = React.useState(1);
   const totalPages = 5; // 총 페이지 수 (예시)
 
-  // 필터 옵션 정의
-  const filterOptions = [
-    { value: 'all', label: '전체' },
-    { value: 'happy', label: '기쁨' },
-    { value: 'sad', label: '슬픔' },
-    { value: 'angry', label: '화남' },
-    { value: 'surprise', label: '놀람' },
-    { value: 'etc', label: '기타' },
-  ];
+  // 최종 필터링된 데이터 (검색 + 필터)
+  const finalFilteredDiaries = filterFilteredDiaries;
 
   // 검색 핸들러
   const handleSearch = (value: string) => {
-    console.log('검색어:', value);
+    // 엔터 또는 검색 버튼 클릭 시 실제 검색 수행
+    setSearchTerm(value);
+  };
+
+  // 검색어 입력 핸들러 (실시간 검색)
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchInput(value);
+    // 입력과 동시에 검색 실행
+    setSearchTerm(value);
   };
 
   // 필터 변경 핸들러
-  const handleFilterChange = (value: string, option: { value: string; label: string }) => {
-    console.log('선택된 필터:', value, option);
+  const handleFilterChange = (value: string) => {
+    setSelectedFilter(value);
   };
 
   // 일기쓰기 버튼 클릭 핸들러
@@ -216,7 +227,7 @@ export const Diaries: React.FC = () => {
               theme="light"
               size="medium"
               options={filterOptions}
-              defaultValue="all"
+              value={selectedFilter}
               onChange={handleFilterChange}
               className={styles.filterWidth}
             />
@@ -230,6 +241,9 @@ export const Diaries: React.FC = () => {
               size="medium"
               placeholder="검색어를 입력해 주세요."
               showSearchIcon={true}
+              showSearchButton={true}
+              value={searchInput}
+              onChange={handleSearchInput}
               onSearch={handleSearch}
               className={styles.searchWidth}
             />
@@ -273,11 +287,13 @@ export const Diaries: React.FC = () => {
             <div>오류가 발생했습니다: {error}</div>
           ) : diaries.length === 0 ? (
             <div>작성된 일기가 없습니다.</div>
+          ) : finalFilteredDiaries.length === 0 ? (
+            <div>작성된 일기가 없습니다.</div>
           ) : (
-            diaries.map((diary) => (
-              <DiaryCard 
-                key={diary.id} 
-                diary={convertToCardData(diary)} 
+            finalFilteredDiaries.map((diary) => (
+              <DiaryCard
+                key={diary.id}
+                diary={convertToCardData(diary)}
                 onCardClick={handleDiaryCardClick}
               />
             ))

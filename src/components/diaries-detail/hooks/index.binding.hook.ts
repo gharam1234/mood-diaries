@@ -7,7 +7,7 @@ import { EmotionType } from '@/commons/constants/enum';
 
 /**
  * 일기 상세 데이터 인터페이스
- * 
+ *
  * @interface DiaryDetailData
  * @property {number} id - 일기 고유 ID
  * @property {string} title - 일기 제목
@@ -25,27 +25,28 @@ export interface DiaryDetailData {
 
 /**
  * 일기 상세 데이터 바인딩 훅
- * 
- * 다이나믹 라우팅의 [id] 파라미터를 추출하여 로컬스토리지에서
+ *
+ * props로 전달받은 diaryId를 사용하여 로컬스토리지에서
  * 해당하는 일기 데이터를 찾아 바인딩하는 기능을 제공합니다.
- * 
+ *
+ * @param {string | undefined} diaryId - 페이지 컴포넌트에서 전달받은 일기 ID
  * @returns {Object} 바인딩 결과
  * @returns {DiaryDetailData | null} diaryData - 바인딩된 일기 데이터
  * @returns {boolean} loading - 로딩 상태
  * @returns {string | null} error - 에러 메시지
- * 
+ *
  * @example
  * ```tsx
- * const { diaryData, loading, error } = useDiaryBinding();
- * 
+ * const { diaryData, loading, error } = useDiaryBinding(diaryId);
+ *
  * if (loading) return <div>로딩 중...</div>;
  * if (error) return <div>오류: {error}</div>;
  * if (!diaryData) return <div>데이터 없음</div>;
- * 
+ *
  * return <div>{diaryData.title}</div>;
  * ```
  */
-export const useDiaryBinding = () => {
+export const useDiaryBinding = (diaryId?: string) => {
   const params = useParams();
   const [diaryData, setDiaryData] = useState<DiaryDetailData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -53,10 +54,23 @@ export const useDiaryBinding = () => {
 
   useEffect(() => {
     try {
-      // URL에서 id 파라미터 추출
-      const diaryId = params?.id;
-      
-      if (!diaryId || typeof diaryId !== 'string') {
+      // ID 추출 - props로 전달받은 diaryId 우선 사용
+      // props가 없으면 useParams() 또는 window.location.pathname 사용
+      let idValue = diaryId;
+
+      if (!idValue) {
+        idValue = params?.id as string | undefined;
+      }
+
+      // 클라이언트 사이드에서 pathname으로도 ID 추출 시도
+      if (!idValue && typeof window !== 'undefined') {
+        const pathMatch = window.location.pathname.match(/\/diaries\/([^/]+)$/);
+        if (pathMatch) {
+          idValue = pathMatch[1];
+        }
+      }
+
+      if (!idValue || typeof idValue !== 'string') {
         setError('유효하지 않은 일기 ID입니다.');
         setLoading(false);
         return;
@@ -64,7 +78,7 @@ export const useDiaryBinding = () => {
 
       // 로컬스토리지에서 diaries 데이터 가져오기
       const diariesJson = localStorage.getItem('diaries');
-      
+
       if (!diariesJson) {
         setError('저장된 일기가 없습니다.');
         setLoading(false);
@@ -73,10 +87,10 @@ export const useDiaryBinding = () => {
 
       // JSON 파싱
       const diaries: DiaryDetailData[] = JSON.parse(diariesJson);
-      
+
       // 숫자 ID로 변환
-      const numericId = parseInt(diaryId, 10);
-      
+      const numericId = parseInt(idValue, 10);
+
       if (isNaN(numericId)) {
         setError('유효하지 않은 일기 ID 형식입니다.');
         setLoading(false);
@@ -85,7 +99,7 @@ export const useDiaryBinding = () => {
 
       // 해당 ID에 맞는 일기 데이터 찾기
       const foundDiary = diaries.find(diary => diary.id === numericId);
-      
+
       if (!foundDiary) {
         setError('해당 일기를 찾을 수 없습니다.');
         setLoading(false);
@@ -101,7 +115,7 @@ export const useDiaryBinding = () => {
     } finally {
       setLoading(false);
     }
-  }, [params?.id]);
+  }, [diaryId, params?.id]);
 
   return {
     diaryData,

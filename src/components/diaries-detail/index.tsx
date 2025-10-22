@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import Image from 'next/image';
 
 import { Button } from '@/commons/components/button';
@@ -8,41 +8,16 @@ import { Input } from '@/commons/components/input';
 import { getEmotionData } from '@/commons/constants/enum';
 
 import { useDiaryBinding } from './hooks/index.binding.hook';
+import { useRetrospectForm, RetrospectData } from './hooks/index.retrospect.form.hook';
 import styles from './styles.module.css';
 
-/**
- * 회고 데이터 인터페이스
- * 
- * @interface RetrospectData
- * @property {string} id - 회고 고유 ID
- * @property {string} content - 회고 내용
- * @property {string} createdAt - 작성일 (YYYY. MM. DD 형식)
- */
-interface RetrospectData {
-  id: string;
-  content: string;
-  createdAt: string;
+interface DiariesDetailProps {
+  diaryId?: string;
 }
-
-// Mock 데이터 제거됨 - 실제 데이터 사용
-
-// Mock 회고 데이터
-const mockRetrospectData: RetrospectData[] = [
-  {
-    id: '1',
-    content: '3년이 지나고 다시 보니 이때가 그립다.',
-    createdAt: '2024. 09. 24'
-  },
-  {
-    id: '2',
-    content: '3년이 지나고 다시 보니 이때가 그립다.',
-    createdAt: '2024. 09. 24'
-  }
-];
 
 /**
  * DiariesDetail 컴포넌트
- * 
+ *
  * 일기 상세 페이지를 렌더링하는 컴포넌트입니다.
  * - detail-title: 제목, 감정 아이콘/텍스트, 작성일
  * - detail-content: 내용 레이블, 내용 텍스트, 복사 버튼
@@ -50,11 +25,37 @@ const mockRetrospectData: RetrospectData[] = [
  * - retrospect-input: 회고 입력 영역
  * - retrospect-list: 회고 목록 영역
  */
-export const DiariesDetail: React.FC = () => {
+export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   // 실제 데이터 바인딩 훅 사용
-  const { diaryData, loading, error } = useDiaryBinding();
-  const [retrospectInput, setRetrospectInput] = useState('');
-  const [retrospectList, setRetrospectList] = useState<RetrospectData[]>(mockRetrospectData);
+  const { diaryData, loading, error } = useDiaryBinding(diaryId);
+
+  // 회고 폼 훅 연동 (diaryData가 없어도 훅은 호출해야 함 - React Hooks Rules)
+  // diaryId가 필요하면 diaryId를 직접 전달하고, 없으면 0 또는 기본값 사용
+  const { form, isSubmitEnabled, onSubmit } = useRetrospectForm(
+    diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0
+  );
+
+  /**
+   * 로컬스토리지에서 현재 일기의 회고 목록을 가져옵니다.
+   *
+   * @description
+   * 로컬스토리지의 'retrospects' 데이터에서 현재 diaryId와 일치하는 회고만 필터링합니다.
+   * 데이터 조회 실패 시 빈 배열을 반환합니다.
+   */
+  const retrospectList = useMemo(() => {
+    try {
+      const data = localStorage.getItem('retrospects');
+      const allRetrospects = data ? JSON.parse(data) : [];
+      const currentDiaryId = diaryData?.id ? Number(diaryData.id) : Number(diaryId);
+      // 현재 diaryId와 일치하는 회고만 필터링
+      return allRetrospects.filter(
+        (r: RetrospectData) => r.diaryId === currentDiaryId
+      );
+    } catch (error) {
+      console.error('회고 데이터 조회 실패:', error);
+      return [];
+    }
+  }, [diaryData, diaryId]);
 
   // 로딩 중이거나 에러가 있는 경우 처리
   if (loading) {
@@ -75,6 +76,7 @@ export const DiariesDetail: React.FC = () => {
 
   // 감정 데이터 가져오기
   const emotionData = getEmotionData(diaryData.emotion);
+  const contentValue = form.watch('content');
 
   // 내용 복사 핸들러
   const handleCopyContent = async () => {
@@ -99,21 +101,9 @@ export const DiariesDetail: React.FC = () => {
     // TODO: 삭제 확인 모달 및 삭제 로직 구현
   };
 
-  // 회고 입력 핸들러
+  // 회고 입력 핸들러 (훅 onSubmit 호출)
   const handleRetrospectSubmit = () => {
-    if (retrospectInput.trim()) {
-      const newRetrospect: RetrospectData = {
-        id: Date.now().toString(),
-        content: retrospectInput.trim(),
-        createdAt: new Date().toLocaleDateString('ko-KR', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit'
-        }).replace(/\. /g, '. ').replace(/\.$/, '')
-      };
-      setRetrospectList(prev => [newRetrospect, ...prev]);
-      setRetrospectInput('');
-    }
+    onSubmit();
   };
 
   return (
@@ -196,8 +186,8 @@ export const DiariesDetail: React.FC = () => {
             theme="light"
             size="medium"
             placeholder="회고를 남겨보세요."
-            value={retrospectInput}
-            onChange={(e) => setRetrospectInput(e.target.value)}
+            value={contentValue}
+            onChange={(e) => form.setValue('content', e.target.value, { shouldValidate: true, shouldDirty: true, shouldTouch: true })}
             style={{ width: '1081px' }}
             // endButton={
             //   <Button
@@ -218,6 +208,7 @@ export const DiariesDetail: React.FC = () => {
                 size="medium"
                 onClick={handleRetrospectSubmit}
                 style={{ width: '51px' }}
+                disabled={!isSubmitEnabled}
               >
                 입력
               </Button>
@@ -226,7 +217,7 @@ export const DiariesDetail: React.FC = () => {
 
       {/* retrospect-list 영역 */}
       <div className={styles.retrospectList}>
-        {retrospectList.map((retrospect, index) => (
+        {retrospectList.map((retrospect: RetrospectData, index: number) => (
           <div key={retrospect.id} className={styles.retrospectItem}>
             <div className={styles.retrospect}>
               <div className={styles.retrospectContent}>{retrospect.content}</div>
