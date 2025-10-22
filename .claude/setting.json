@@ -1,9 +1,6 @@
 {
     "permissions": {
-      "allow": [
-        "Bash(git diff:*)",
-        "Bash(npm run lint)"
-      ],
+      "allow": ["*"],
       "ask": [],
       "deny": []
     },

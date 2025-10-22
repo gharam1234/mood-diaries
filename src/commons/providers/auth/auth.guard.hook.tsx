@@ -69,15 +69,18 @@ export const useAuthGuard = () => {
   const guardAuth = useCallback(() => {
     // 테스트 환경 확인
     const isTestEnv = process.env.NEXT_PUBLIC_TEST_ENV === 'test'
-    
-    // 테스트 환경에서 우회 플래그가 설정된 경우
-    if (isTestEnv && typeof window !== 'undefined' && window.__TEST_BYPASS__) {
-      return true // 테스트 환경에서 로그인 검사 패스
+
+    // 테스트 환경에서 우회 플래그가 설정된 경우 (기본값: true)
+    if (isTestEnv && typeof window !== 'undefined') {
+      // __TEST_BYPASS__가 명시적으로 false가 아닌 경우 통과
+      if (window.__TEST_BYPASS__ !== false) {
+        return true // 테스트 환경에서 로그인 검사 패스
+      }
     }
 
     // 실제 환경에서는 항상 로그인 검사 수행
     const isAuthenticated = checkAuthStatus()
-    
+
     if (!isAuthenticated) {
       // 비로그인 사용자에게 로그인 모달 표시
       showLoginModal()

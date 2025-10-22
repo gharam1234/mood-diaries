@@ -2,11 +2,6 @@ import { test, expect } from '@playwright/test';
 
 test.describe('일기 등록 폼 기능 테스트', () => {
   test.beforeEach(async ({ page }) => {
-    // 테스트 환경에서 로그인 검사 우회 (액션GUARD 무시)
-    await page.addInitScript(() => {
-      window.__TEST_BYPASS__ = true;
-    });
-
     // 테스트 전 로컬스토리지 초기화
     await page.goto('/diaries');
     await page.evaluate(() => {

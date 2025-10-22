@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 import { Button } from '@/commons/components/button';
@@ -35,25 +35,23 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
     diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0
   );
 
-  /**
-   * 로컬스토리지에서 현재 일기의 회고 목록을 가져옵니다.
-   *
-   * @description
-   * 로컬스토리지의 'retrospects' 데이터에서 현재 diaryId와 일치하는 회고만 필터링합니다.
-   * 데이터 조회 실패 시 빈 배열을 반환합니다.
-   */
-  const retrospectList = useMemo(() => {
+  // 회고 목록을 위한 상태
+  const [retrospectList, setRetrospectList] = React.useState<RetrospectData[]>([]);
+
+  // 회고 데이터 로드
+  React.useEffect(() => {
     try {
       const data = localStorage.getItem('retrospects');
       const allRetrospects = data ? JSON.parse(data) : [];
       const currentDiaryId = diaryData?.id ? Number(diaryData.id) : Number(diaryId);
       // 현재 diaryId와 일치하는 회고만 필터링
-      return allRetrospects.filter(
+      const filtered = allRetrospects.filter(
         (r: RetrospectData) => r.diaryId === currentDiaryId
       );
+      setRetrospectList(filtered);
     } catch (error) {
       console.error('회고 데이터 조회 실패:', error);
-      return [];
+      setRetrospectList([]);
     }
   }, [diaryData, diaryId]);
 
@@ -189,6 +187,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
             value={contentValue}
             onChange={(e) => form.setValue('content', e.target.value, { shouldValidate: true, shouldDirty: true, shouldTouch: true })}
             style={{ width: '1081px' }}
+            data-testid="retrospect-input"
             // endButton={
             //   <Button
             //     variant="primary"

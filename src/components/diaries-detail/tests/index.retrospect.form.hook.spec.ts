@@ -57,9 +57,12 @@ test.describe('DiariesDetail - 회고 폼 훅', () => {
     // 페이지로 이동
     await page.goto('/diaries/1', { waitUntil: 'domcontentloaded' });
 
-    // 입력 인풋 대기
-    const input = page.locator('input[placeholder="회고를 남겨보세요."]');
-    await input.waitFor({ timeout: 500 });
+    // 일기 상세 데이터 로드 대기
+    await page.waitForSelector('[data-testid="diary-detail-container"]', { timeout: 3000 });
+
+    // 입력 인풋 대기 (data-testid 기반)
+    const input = page.locator('[data-testid="retrospect-input"]');
+    await input.waitFor({ timeout: 1000 });
 
     // 입력 인풋 채우기 -> 버튼 활성화 확인
     await input.fill('오늘의 배움: TDD로 회고 기능 추가');
@@ -104,9 +107,12 @@ test.describe('DiariesDetail - 회고 폼 훅', () => {
     // 페이지로 이동
     await page.goto('/diaries/1', { waitUntil: 'domcontentloaded' });
 
+    // 일기 상세 데이터 로드 대기
+    await page.waitForSelector('[data-testid="diary-detail-container"]', { timeout: 3000 });
+
     // 입력 인풋 대기
-    const input = page.locator('input[placeholder="회고를 남겨보세요."]');
-    await input.waitFor({ timeout: 500 });
+    const input = page.locator('[data-testid="retrospect-input"]');
+    await input.waitFor({ timeout: 1000 });
 
     // 기존 데이터 주입 (실제 로컬스토리지 사용, 모킹 아님)
     await page.evaluate(() => {

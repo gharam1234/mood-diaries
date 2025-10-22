@@ -87,9 +87,14 @@ export const AuthGuard = ({ children }: AuthGuardProps): JSX.Element => {
       // AuthProvider 초기화 대기 (약간의 지연을 두어 초기화 완료 보장)
       await new Promise(resolve => setTimeout(resolve, 100))
 
-      // 실제 환경: 비로그인 유저를 기본으로 설정
-      // 테스트 환경: 로그인 유저를 기본으로 설정
-      const effectiveIsLoggedIn = isTestEnv ? true : isLoggedIn
+      // 테스트 환경에서 __TEST_BYPASS__ 플래그 확인
+      let effectiveIsLoggedIn = isLoggedIn
+      if (isTestEnv && typeof window !== 'undefined') {
+        // __TEST_BYPASS__가 명시적으로 false가 아닌 경우 로그인된 상태로 처리 (기본값: true)
+        if (window.__TEST_BYPASS__ !== false) {
+          effectiveIsLoggedIn = true
+        }
+      }
 
       // 비로그인 상태에서 PRIVATE 페이지 접근 시 모달 표시
       if (!effectiveIsLoggedIn && isPrivatePage && !loginModalShownRef.current) {
@@ -162,6 +167,13 @@ export const AuthGuard = ({ children }: AuthGuardProps): JSX.Element => {
   // 5. 인가 완료됨 또는 PUBLIC 페이지: children 렌더링
   return <>{children}</>
 };
+
+// 전역 타입 선언 (window 객체 확장)
+declare global {
+  interface Window {
+    __TEST_BYPASS__?: boolean
+  }
+}
 
 // 기본 export
 export default AuthGuard

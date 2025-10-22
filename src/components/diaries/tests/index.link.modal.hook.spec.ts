@@ -13,9 +13,16 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('일기쓰기 모달 권한분기 테스트', () => {
-  
+  test.beforeEach(async ({ page }) => {
+    // 로컬스토리지 초기화
+    await page.goto('/diaries');
+    await page.evaluate(() => {
+      localStorage.clear();
+    });
+  });
+
   test('비로그인 유저 - 일기쓰기 버튼 클릭 시 로그인 요청 모달 노출', async ({ page }) => {
-    // 테스트 환경에서 로그인 검사 우회 비활성화
+    // 테스트 환경에서 로그인 검사 우회 비활성화를 위해 initScript 추가 (페이지 로드 전)
     await page.addInitScript(() => {
       window.__TEST_BYPASS__ = false;
     });
@@ -37,12 +44,7 @@ test.describe('일기쓰기 모달 권한분기 테스트', () => {
   });
 
   test('로그인 유저 - 일기쓰기 버튼 클릭 시 일기쓰기 페이지 모달 노출', async ({ page }) => {
-    // 테스트 환경에서 로그인 검사 우회 활성화
-    await page.addInitScript(() => {
-      window.__TEST_BYPASS__ = true;
-    });
-
-    // /diaries 페이지 접속
+    // /diaries 페이지 접속 (기본값으로 __TEST_BYPASS__ = true)
     await page.goto('/diaries');
     
     // 페이지 로드 확인 (data-testid 대기)
@@ -60,12 +62,7 @@ test.describe('일기쓰기 모달 권한분기 테스트', () => {
   });
 
   test('로그인 유저 - 모달 닫기 기능 테스트', async ({ page }) => {
-    // 테스트 환경에서 로그인 검사 우회 활성화
-    await page.addInitScript(() => {
-      window.__TEST_BYPASS__ = true;
-    });
-
-    // /diaries 페이지 접속
+    // /diaries 페이지 접속 (기본값으로 __TEST_BYPASS__ = true)
     await page.goto('/diaries');
     
     // 페이지 로드 확인

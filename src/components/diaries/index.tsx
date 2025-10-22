@@ -221,7 +221,7 @@ export const Diaries: React.FC = () => {
       <section className={styles.search}>
         <div className={styles.searchContent}>
           {/* 필터 선택박스 */}
-          <div className={styles.filterSelect}>
+          <div className={styles.filterSelect} data-testid="diary-filter-select">
             <SelectBox
               variant="primary"
               theme="light"
