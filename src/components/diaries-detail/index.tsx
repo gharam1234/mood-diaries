@@ -5,10 +5,12 @@ import Image from 'next/image';
 
 import { Button } from '@/commons/components/button';
 import { Input } from '@/commons/components/input';
-import { getEmotionData } from '@/commons/constants/enum';
+import { SelectBox } from '@/commons/components/selectbox';
+import { getEmotionData, EmotionType, EMOTION_LIST } from '@/commons/constants/enum';
 
 import { useDiaryBinding } from './hooks/index.binding.hook';
 import { useRetrospectForm, RetrospectData } from './hooks/index.retrospect.form.hook';
+import { useDiaryUpdateForm } from './hooks/index.update.hook';
 import styles from './styles.module.css';
 
 interface DiariesDetailProps {
@@ -29,6 +31,9 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   // 실제 데이터 바인딩 훅 사용
   const { diaryData, loading, error } = useDiaryBinding(diaryId);
 
+  // 수정 모드 상태
+  const [isEditMode, setIsEditMode] = React.useState(false);
+
   // 회고 목록을 위한 상태
   const [retrospectList, setRetrospectList] = React.useState<RetrospectData[]>([]);
 
@@ -42,6 +47,27 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   const { form, isSubmitEnabled, onSubmit } = useRetrospectForm(
     diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0,
     handleRetrospectSuccess
+  );
+
+  // 일기 수정 폼 훅
+  const { 
+    form: updateForm, 
+    isFormValid, 
+    initializeForm, 
+    onSubmit: onUpdateSubmit, 
+    onCancel: onUpdateCancel 
+  } = useDiaryUpdateForm(
+    diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0,
+    () => {
+      // 수정 완료 후 처리
+      setIsEditMode(false);
+      // 데이터 업데이트를 위해 페이지 새로고침
+      window.location.reload();
+    },
+    () => {
+      // 수정 취소 처리
+      setIsEditMode(false);
+    }
   );
 
   // 회고 데이터 로드
@@ -60,6 +86,13 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
       setRetrospectList([]);
     }
   }, [diaryData, diaryId]);
+
+  // 수정 모드 진입 시 폼 초기화
+  React.useEffect(() => {
+    if (isEditMode && diaryData) {
+      initializeForm(diaryData);
+    }
+  }, [isEditMode, diaryData, initializeForm]);
 
   // 로딩 중이거나 에러가 있는 경우 처리
   if (loading) {
@@ -82,6 +115,12 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   const emotionData = getEmotionData(diaryData.emotion);
   const contentValue = form.watch('content');
 
+  // 감정 옵션 생성
+  const emotionOptions = EMOTION_LIST.map(emotion => ({
+    value: emotion,
+    label: getEmotionData(emotion).label
+  }));
+
   // 내용 복사 핸들러
   const handleCopyContent = async () => {
     try {
@@ -95,8 +134,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
 
   // 수정 버튼 핸들러
   const handleEdit = () => {
-    console.log('수정 버튼 클릭');
-    // TODO: 수정 페이지로 이동 로직 구현
+    setIsEditMode(true);
   };
 
   // 삭제 버튼 핸들러
@@ -112,74 +150,173 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
 
   return (
     <div className={styles.container} data-testid="diary-detail-container">
-      {/* detail-title 영역 */}
-      <div className={styles.titleSection}>
-        <div className={styles.titleContainer}>
-          <h1 className={styles.title} data-testid="diary-title">{diaryData.title}</h1>
-        </div>
-        <div className={styles.emotionAndDate}>
-          <div className={styles.emotionContainer}>
-            <div className={styles.emotionIcon}>
-              <Image
-                src={emotionData.images.small}
-                alt={emotionData.label}
-                width={32}
-                height={32}
-                style={{ width: 'auto', height: 'auto' }}
+      {!isEditMode ? (
+        // 수정 전 화면 (기존 화면)
+        <>
+          {/* detail-title 영역 */}
+          <div className={styles.titleSection}>
+            <div className={styles.titleContainer}>
+              <h1 className={styles.title} data-testid="diary-title">{diaryData.title}</h1>
+            </div>
+            <div className={styles.emotionAndDate}>
+              <div className={styles.emotionContainer}>
+                <div className={styles.emotionIcon}>
+                  <Image
+                    src={emotionData.images.small}
+                    alt={emotionData.label}
+                    width={32}
+                    height={32}
+                    style={{ width: 'auto', height: 'auto' }}
+                  />
+                </div>
+                <span className={styles.emotionText} data-testid="diary-emotion-text">{emotionData.label}</span>
+              </div>
+              <div className={styles.dateContainer}>
+                <span className={styles.dateText} data-testid="diary-created-at">{diaryData.createdAt}</span>
+                <span className={styles.dateLabel}>작성</span>
+              </div>
+            </div>
+          </div>
+
+          {/* detail-content 영역 */}
+          <div className={styles.contentSection}>
+            <div className={styles.contentArea}>
+              <div className={styles.contentLabel}>내용</div>
+              <div className={styles.contentText} data-testid="diary-content">{diaryData.content}</div>
+            </div>
+            <div className={styles.copyContainer}>
+              <button className={styles.copyButton} onClick={handleCopyContent} data-testid="copy-button">
+                <Image
+                  src="/icons/copy_outline_light_m.svg"
+                  alt="복사"
+                  width={24}
+                  height={24}
+                  style={{ width: 'auto', height: 'auto' }}
+                />
+                <span className={styles.copyText}>내용 복사</span>
+              </button>
+            </div>
+          </div>
+
+          {/* detail-footer 영역 */}
+          <div className={styles.detailFooter}>
+            <div className={styles.buttonContainer}>
+              <Button
+                variant="secondary"
+                theme="light"
+                size="medium"
+                className={styles.editButton}
+                onClick={handleEdit}
+              >
+                수정
+              </Button>
+              <Button
+                variant="secondary"
+                theme="light"
+                size="medium"
+                className={styles.deleteButton}
+                onClick={handleDelete}
+              >
+                삭제
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        // 수정 중 화면
+        <form className={styles.editForm} data-testid="edit-form" onSubmit={(e) => {
+          console.log('[DiariesDetail] Form onSubmit triggered');
+          onUpdateSubmit(e);
+        }}>
+          <div className={styles.titleSection}>
+            <div className={styles.titleContainer}>
+              <Input
+                variant="primary"
+                theme="light"
+                size="medium"
+                value={updateForm.watch('title')}
+                onChange={(e) => {
+                  updateForm.setValue('title', e.target.value, { shouldValidate: true });
+                }}
+                onBlur={() => updateForm.trigger('title')}
+                placeholder="제목을 입력하세요"
+                data-testid="edit-title-input"
+                style={{ width: '100%', fontSize: '24px', fontWeight: 'bold' }}
               />
             </div>
-            <span className={styles.emotionText} data-testid="diary-emotion-text">{emotionData.label}</span>
+            <div className={styles.emotionAndDate}>
+              <div className={styles.emotionContainer}>
+                <div data-testid="edit-emotion-select">
+                  <SelectBox
+                    variant="primary"
+                    theme="light"
+                    size="medium"
+                    options={emotionOptions}
+                    value={updateForm.watch('emotion')}
+                    onChange={(value) => {
+                      updateForm.setValue('emotion', value as EmotionType, { shouldValidate: true });
+                    }}
+                  />
+                </div>
+              </div>
+              <div className={styles.dateContainer}>
+                <span className={styles.dateText} data-testid="diary-created-at">{diaryData.createdAt}</span>
+                <span className={styles.dateLabel}>작성</span>
+              </div>
+            </div>
           </div>
-          <div className={styles.dateContainer}>
-            <span className={styles.dateText} data-testid="diary-created-at">{diaryData.createdAt}</span>
-            <span className={styles.dateLabel}>작성</span>
+
+          <div className={styles.contentSection}>
+            <div className={styles.contentArea}>
+              <div className={styles.contentLabel}>내용</div>
+              <textarea
+                className={styles.editContentTextarea}
+                value={updateForm.watch('content')}
+                onChange={(e) => {
+                  updateForm.setValue('content', e.target.value, { shouldValidate: true });
+                }}
+                onBlur={() => updateForm.trigger('content')}
+                placeholder="내용을 입력하세요"
+                data-testid="edit-content-textarea"
+                rows={6}
+                style={{
+                  width: '100%',
+                  minHeight: '100px',
+                  padding: '12px',
+                  border: '1px solid var(--color-border-primary)',
+                  borderRadius: '8px',
+                  fontSize: '16px',
+                  fontFamily: 'var(--font-family-default)',
+                  resize: 'vertical'
+                }}
+              />
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* detail-content 영역 */}
-      <div className={styles.contentSection}>
-        <div className={styles.contentArea}>
-          <div className={styles.contentLabel}>내용</div>
-          <div className={styles.contentText} data-testid="diary-content">{diaryData.content}</div>
-        </div>
-        <div className={styles.copyContainer}>
-          <button className={styles.copyButton} onClick={handleCopyContent} data-testid="copy-button">
-            <Image
-              src="/icons/copy_outline_light_m.svg"
-              alt="복사"
-              width={24}
-              height={24}
-              style={{ width: 'auto', height: 'auto' }}
-            />
-            <span className={styles.copyText}>내용 복사</span>
-          </button>
-        </div>
-      </div>
-
-      {/* detail-footer 영역 */}
-      <div className={styles.detailFooter}>
-        <div className={styles.buttonContainer}>
-          <Button
-            variant="secondary"
-            theme="light"
-            size="medium"
-            className={styles.editButton}
-            onClick={handleEdit}
-          >
-            수정
-          </Button>
-          <Button
-            variant="secondary"
-            theme="light"
-            size="medium"
-            className={styles.deleteButton}
-            onClick={handleDelete}
-          >
-            삭제
-          </Button>
-        </div>
-      </div>
+          <div className={styles.detailFooter}>
+            <div className={styles.buttonContainer}>
+              <Button
+                type="submit"
+                variant="primary"
+                theme="light"
+                size="medium"
+                disabled={!isFormValid}
+              >
+                수정하기
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                theme="light"
+                size="medium"
+                onClick={onUpdateCancel}
+              >
+                취소
+              </Button>
+            </div>
+          </div>
+        </form>
+      )}
 
       {/* retrospect-input 영역 */}
       <div className={styles.retrospectInput}>
@@ -194,6 +331,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
             onChange={(e) => form.setValue('content', e.target.value, { shouldValidate: true, shouldDirty: true, shouldTouch: true })}
             style={{ width: '1081px' }}
             data-testid="retrospect-input"
+            disabled={isEditMode}
             // endButton={
             //   <Button
             //     variant="primary"
@@ -213,7 +351,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
                 size="medium"
                 onClick={handleRetrospectSubmit}
                 style={{ width: '51px' }}
-                disabled={!isSubmitEnabled}
+                disabled={!isSubmitEnabled || isEditMode}
               >
                 입력
               </Button>

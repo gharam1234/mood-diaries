@@ -197,6 +197,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={handlePrevious}
           disabled={currentPage <= 1 || disabled}
           aria-label="이전 페이지로 이동"
+          data-testid="pagination-prev"
         >
           <svg className={styles.icon} viewBox="0 0 24 24" fill="none">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="currentColor"/>
@@ -217,6 +218,7 @@ export const Pagination: React.FC<PaginationProps> = ({
                 disabled={disabled}
                 aria-current={page === currentPage ? 'page' : undefined}
                 aria-label={`${page}페이지로 이동`}
+                data-testid={`pagination-page-${page}`}
               >
                 {page}
               </button>
@@ -236,6 +238,7 @@ export const Pagination: React.FC<PaginationProps> = ({
           onClick={handleNext}
           disabled={currentPage >= totalPages || disabled}
           aria-label="다음 페이지로 이동"
+          data-testid="pagination-next"
         >
           <svg className={styles.icon} viewBox="0 0 24 24" fill="none">
             <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="currentColor"/>

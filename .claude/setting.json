@@ -2,7 +2,7 @@
     "permissions": {
       "allow": ["*"],
       "ask": [],
-      "deny": []
+      "deny": ["Bash(rm *)", "Bash(rm -rf *)", "Bash(unlink *)", "Delete(*)"]
     },
     "defaultMode": "acceptEdits"
   }

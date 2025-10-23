@@ -8,7 +8,7 @@ interface DiaryDetailPageProps {
 
 export default function DiaryDetailPage({ params }: DiaryDetailPageProps) {
   return (
-    <div data-testid="diary-detail-container">
+    <div>
       <DiariesDetail diaryId={params.id} />
     </div>
   );

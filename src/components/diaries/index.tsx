@@ -13,6 +13,7 @@ import { useDiaryBinding, DiaryData as BindingDiaryData } from './hooks/index.bi
 import { useLinkRouting } from './hooks/index.link.routing.hook';
 import { useDiarySearch } from './hooks/index.search.hook';
 import { useDiaryFilter } from './hooks/index.filter.hook';
+import { useDiaryPagination } from './hooks/index.pagination.hook';
 
 /**
  * 일기 카드 표시용 데이터 타입
@@ -99,9 +100,10 @@ const DiaryCard: React.FC<{
   };
   
   return (
-    <div 
+    <div
       className={styles.diaryCard}
       onClick={handleCardClick}
+      data-testid="diary-card"
     >
       {/* 카드 이미지 */}
       <div className={styles.cardImage}>
@@ -170,12 +172,14 @@ export const Diaries: React.FC = () => {
   // 링크 라우팅 훅 사용
   const { navigateToDiaryDetail } = useLinkRouting();
 
-  // 페이지네이션 상태
-  const [currentPage, setCurrentPage] = React.useState(1);
-  const totalPages = 5; // 총 페이지 수 (예시)
-
   // 최종 필터링된 데이터 (검색 + 필터)
   const finalFilteredDiaries = filterFilteredDiaries;
+
+  // 페이지네이션 훅 사용
+  const { paginatedDiaries, currentPage, totalPages, setCurrentPage } = useDiaryPagination(finalFilteredDiaries, {
+    itemsPerPage: 12,
+    maxVisiblePages: 5,
+  });
 
   // 검색 핸들러
   const handleSearch = (value: string) => {
@@ -290,7 +294,7 @@ export const Diaries: React.FC = () => {
           ) : finalFilteredDiaries.length === 0 ? (
             <div>작성된 일기가 없습니다.</div>
           ) : (
-            finalFilteredDiaries.map((diary) => (
+            paginatedDiaries.map((diary) => (
               <DiaryCard
                 key={diary.id}
                 diary={convertToCardData(diary)}
