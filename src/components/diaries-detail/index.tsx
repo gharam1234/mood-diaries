@@ -29,14 +29,20 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   // 실제 데이터 바인딩 훅 사용
   const { diaryData, loading, error } = useDiaryBinding(diaryId);
 
+  // 회고 목록을 위한 상태
+  const [retrospectList, setRetrospectList] = React.useState<RetrospectData[]>([]);
+
+  // 회고 등록 성공 시 상태 업데이트 콜백
+  const handleRetrospectSuccess = (newRetrospect: RetrospectData) => {
+    setRetrospectList(prev => [...prev, newRetrospect]);
+  };
+
   // 회고 폼 훅 연동 (diaryData가 없어도 훅은 호출해야 함 - React Hooks Rules)
   // diaryId가 필요하면 diaryId를 직접 전달하고, 없으면 0 또는 기본값 사용
   const { form, isSubmitEnabled, onSubmit } = useRetrospectForm(
-    diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0
+    diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0,
+    handleRetrospectSuccess
   );
-
-  // 회고 목록을 위한 상태
-  const [retrospectList, setRetrospectList] = React.useState<RetrospectData[]>([]);
 
   // 회고 데이터 로드
   React.useEffect(() => {
