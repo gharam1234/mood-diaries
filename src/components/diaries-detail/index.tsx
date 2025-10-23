@@ -5,7 +5,6 @@ import Image from 'next/image';
 
 import { Button } from '@/commons/components/button';
 import { Input } from '@/commons/components/input';
-import { SelectBox } from '@/commons/components/selectbox';
 import { getEmotionData, EmotionType, EMOTION_LIST } from '@/commons/constants/enum';
 
 import { useDiaryBinding } from './hooks/index.binding.hook';
@@ -121,12 +120,6 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   const emotionData = getEmotionData(diaryData.emotion);
   const contentValue = form.watch('content');
 
-  // 감정 옵션 생성
-  const emotionOptions = EMOTION_LIST.map(emotion => ({
-    value: emotion,
-    label: getEmotionData(emotion).label
-  }));
-
   // 내용 복사 핸들러
   const handleCopyContent = async () => {
     try {
@@ -234,7 +227,32 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
           console.log('[DiariesDetail] Form onSubmit triggered');
           onUpdateSubmit(e);
         }}>
+          {/* 감정 선택 영역 */}
+          <div className={styles.editEmotionBox}>
+            <h2 className={styles.editEmotionTitle}>오늘 기분은 어땠나요?</h2>
+            <div className={styles.editEmotionRadioGroup} data-testid="edit-emotion-select">
+              {EMOTION_LIST.map((emotion) => (
+                <label key={emotion} className={styles.editRadioLabel}>
+                  <input
+                    type="radio"
+                    name="emotion"
+                    value={emotion}
+                    checked={updateForm.watch('emotion') === emotion}
+                    onChange={() => {
+                      updateForm.setValue('emotion', emotion as EmotionType, { shouldValidate: true });
+                    }}
+                    className={styles.editRadioInput}
+                  />
+                  <span className={styles.editRadioCustom}></span>
+                  <span className={styles.editRadioText}>{getEmotionData(emotion).label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* 제목 입력 영역 */}
           <div className={styles.titleSection}>
+            <div className={styles.editTitleLabel}>제목</div>
             <div className={styles.titleContainer}>
               <Input
                 variant="primary"
@@ -247,79 +265,59 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
                 onBlur={() => updateForm.trigger('title')}
                 placeholder="제목을 입력하세요"
                 data-testid="edit-title-input"
-                style={{ width: '100%', fontSize: '24px', fontWeight: 'bold' }}
+                style={{ width: '100%', fontSize: '16px' }}
               />
-            </div>
-            <div className={styles.emotionAndDate}>
-              <div className={styles.emotionContainer}>
-                <div data-testid="edit-emotion-select">
-                  <SelectBox
-                    variant="primary"
-                    theme="light"
-                    size="medium"
-                    options={emotionOptions}
-                    value={updateForm.watch('emotion')}
-                    onChange={(value) => {
-                      updateForm.setValue('emotion', value as EmotionType, { shouldValidate: true });
-                    }}
-                  />
-                </div>
-              </div>
-              <div className={styles.dateContainer}>
-                <span className={styles.dateText} data-testid="diary-created-at">{diaryData.createdAt}</span>
-                <span className={styles.dateLabel}>작성</span>
-              </div>
             </div>
           </div>
 
+          {/* 내용 입력 영역 */}
           <div className={styles.contentSection}>
-            <div className={styles.contentArea}>
-              <div className={styles.contentLabel}>내용</div>
-              <textarea
-                className={styles.editContentTextarea}
-                value={updateForm.watch('content')}
-                onChange={(e) => {
-                  updateForm.setValue('content', e.target.value, { shouldValidate: true });
-                }}
-                onBlur={() => updateForm.trigger('content')}
-                placeholder="내용을 입력하세요"
-                data-testid="edit-content-textarea"
-                rows={6}
-                style={{
-                  width: '100%',
-                  minHeight: '100px',
-                  padding: '12px',
-                  border: '1px solid var(--color-border-primary)',
-                  borderRadius: '8px',
-                  fontSize: '16px',
-                  fontFamily: 'var(--font-family-default)',
-                  resize: 'vertical'
-                }}
-              />
-            </div>
+            <div className={styles.editContentLabel}>내용</div>
+            <textarea
+              className={styles.editContentTextarea}
+              value={updateForm.watch('content')}
+              onChange={(e) => {
+                updateForm.setValue('content', e.target.value, { shouldValidate: true });
+              }}
+              onBlur={() => updateForm.trigger('content')}
+              placeholder="내용을 입력하세요"
+              data-testid="edit-content-textarea"
+              rows={8}
+              style={{
+                width: '100%',
+                minHeight: '128px',
+                padding: '12px',
+                border: '1px solid var(--color-border-primary)',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontFamily: 'var(--font-family-default)',
+                resize: 'vertical'
+              }}
+            />
           </div>
 
-          <div className={styles.detailFooter}>
-            <div className={styles.buttonContainer}>
-              <Button
-                type="submit"
-                variant="primary"
-                theme="light"
-                size="medium"
-                disabled={!isFormValid}
-              >
-                수정하기
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                theme="light"
-                size="medium"
-                onClick={onUpdateCancel}
-              >
-                취소
-              </Button>
-            </div>
+          {/* 버튼 영역 - 중앙정렬 */}
+          <div className={styles.editButtonContainer}>
+            <Button
+              type="button"
+              variant="secondary"
+              theme="light"
+              size="medium"
+              onClick={onUpdateCancel}
+              className={styles.editCancelButton}
+            >
+              취소
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              theme="light"
+              size="medium"
+              disabled={!isFormValid}
+              className={styles.editSubmitButton}
+            >
+              수정 하기
+            </Button>
           </div>
         </form>
       )}

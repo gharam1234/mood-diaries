@@ -98,8 +98,9 @@
 
 .contentSection {
   width: 1168px;
-  height: 169px;
-  margin-bottom: 24px; /* gap: 1168 * 24 */
+  /* height: 169px; */
+  /* 고정시켜놓으면 안되고 그안에 컨텐트에 따라 조절되게 해놔야함 */
+  /* margin-bottom: 24px; gap: 1168 * 24 */
 }
 
 .contentArea {
@@ -285,6 +286,131 @@
 .editForm {
   width: 100%;
   max-width: 1168px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 감정 선택 영역 */
+.editEmotionBox {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 16px;
+}
+
+.editEmotionTitle {
+  font-family: var(--font-family-default);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.2px;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.editEmotionRadioGroup {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.editRadioLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 8px;
+}
+
+.editRadioInput {
+  position: absolute;
+  opacity: 0.0001;
+  width: 24px;
+  height: 24px;
+}
+
+.editRadioCustom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-border-primary);
+  border-radius: 50%;
+  background-color: var(--color-background-primary);
+  transition: all 0.2s ease;
+}
+
+.editRadioInput:checked + .editRadioCustom {
+  border-color: var(--color-interactive-primary);
+  background-color: var(--color-interactive-primary);
+}
+
+.editRadioInput:checked + .editRadioCustom::after {
+  content: '';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-background-primary);
+  border-radius: 50%;
+  margin: auto;
+}
+
+.editRadioText {
+  font-family: var(--font-family-default);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.18px;
+  color: var(--color-text-secondary);
+}
+
+.editRadioInput:checked + .editRadioCustom + .editRadioText {
+  color: var(--color-text-primary);
+  font-weight: 600;
+}
+
+/* 제목 입력 영역 */
+.editTitleLabel {
+  font-family: var(--font-family-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+}
+
+/* 내용 입력 영역 */
+.editContentLabel {
+  font-family: var(--font-family-default);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.14px;
+  color: var(--color-text-secondary);
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* 버튼 영역 - 중앙정렬 */
+.editButtonContainer {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 24px 0;
+}
+
+.editCancelButton {
+  min-width: 104px;
+}
+
+.editSubmitButton {
+  min-width: 104px;
 }
 
 .editContentTextarea {
@@ -300,7 +426,7 @@
   border-radius: 8px;
   padding: 12px;
   resize: vertical;
-  min-height: 100px;
+  min-height: 128px;
   width: 100%;
 }
 
