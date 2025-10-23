@@ -41,31 +41,30 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
   // onClose 콜백 스택
   const [onCloseCallbacks, setOnCloseCallbacks] = useState<(() => void)[]>([])
 
+  const openModal = useCallback((content: ReactNode, onCloseCallback?: () => void) => {
+    setModalStack(prev => [...prev, content])
+    setOnCloseCallbacks(prev => [...prev, onCloseCallback || (() => {})])
+  }, [])
+
+  const closeTop = useCallback(() => {
+    // 최상단 콜백 실행
+    if (onCloseCallbacks.length > 0) {
+      const callback = onCloseCallbacks[onCloseCallbacks.length - 1];
+      callback?.();
+    }
+
+    setOnCloseCallbacks(prev => prev.slice(0, prev.length - 1))
+    setModalStack(prev => {
+      if (prev.length === 0) return prev;
+      return prev.slice(0, prev.length - 1);
+    })
+  }, [onCloseCallbacks])
+
   // ESC 키: 최상단만 닫기
   useEffect(() => {
     const handleEscapeKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && modalStack.length > 0) {
-        // 최상단 모달의 onClose 콜백 호출
-        const topCallback = onCloseCallbacks[onCloseCallbacks.length - 1];
-        
-        // onClose 콜백을 먼저 호출하여 라우팅이 제대로 작동하도록 함
-        if (topCallback) {
-          topCallback();
-        }
-        
-        // 콜백에서 closeAll이 호출될 수 있으므로 약간의 지연 후 스택 상태를 확인하여 제거
-        setTimeout(() => {
-          setModalStack(prev => {
-            // closeAll이 호출되었다면 이미 빈 배열일 것임
-            if (prev.length === 0) return prev;
-            return prev.slice(0, prev.length - 1);
-          })
-          setOnCloseCallbacks(prev => {
-            // closeAll이 호출되었다면 이미 빈 배열일 것임
-            if (prev.length === 0) return prev;
-            return prev.slice(0, prev.length - 1);
-          })
-        }, 0);
+        closeTop();
       }
     }
 
@@ -75,7 +74,7 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
     return () => {
       document.removeEventListener('keydown', handleEscapeKey)
     }
-  }, [modalStack.length, onCloseCallbacks])
+  }, [modalStack.length, closeTop])
 
   // 바디 스크롤 제어: 하나라도 열려 있으면 숨김
   useEffect(() => {
@@ -90,37 +89,6 @@ export const ModalProvider = ({ children }: ModalProviderProps) => {
       document.body.style.overflow = 'unset'
     }
   }, [modalStack.length])
-
-  const openModal = useCallback((content: ReactNode, onCloseCallback?: () => void) => {
-    setModalStack(prev => [...prev, content])
-    setOnCloseCallbacks(prev => [...prev, onCloseCallback || (() => {})])
-  }, [])
-
-  const closeTop = useCallback(() => {
-    if (modalStack.length === 0) return;
-    
-    // 최상단 모달의 onClose 콜백 호출
-    const topCallback = onCloseCallbacks[onCloseCallbacks.length - 1];
-    
-    // onClose 콜백을 먼저 호출하여 라우팅이 제대로 작동하도록 함
-    if (topCallback) {
-      topCallback();
-    }
-    
-    // 콜백에서 closeAll이 호출될 수 있으므로 약간의 지연 후 스택 상태를 확인하여 제거
-    setTimeout(() => {
-      setModalStack(prev => {
-        // closeAll이 호출되었다면 이미 빈 배열일 것임
-        if (prev.length === 0) return prev;
-        return prev.slice(0, prev.length - 1);
-      })
-      setOnCloseCallbacks(prev => {
-        // closeAll이 호출되었다면 이미 빈 배열일 것임
-        if (prev.length === 0) return prev;
-        return prev.slice(0, prev.length - 1);
-      })
-    }, 0);
-  }, [modalStack.length, onCloseCallbacks])
 
   const closeAll = useCallback(() => {
     // 모든 모달 스택 제거 (onClose 콜백은 호출하지 않음)

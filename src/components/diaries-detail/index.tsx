@@ -11,6 +11,7 @@ import { getEmotionData, EmotionType, EMOTION_LIST } from '@/commons/constants/e
 import { useDiaryBinding } from './hooks/index.binding.hook';
 import { useRetrospectForm, RetrospectData } from './hooks/index.retrospect.form.hook';
 import { useDiaryUpdateForm } from './hooks/index.update.hook';
+import { useDiaryDelete } from './hooks/index.delete.hook';
 import styles from './styles.module.css';
 
 interface DiariesDetailProps {
@@ -50,12 +51,12 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
   );
 
   // 일기 수정 폼 훅
-  const { 
-    form: updateForm, 
-    isFormValid, 
-    initializeForm, 
-    onSubmit: onUpdateSubmit, 
-    onCancel: onUpdateCancel 
+  const {
+    form: updateForm,
+    isFormValid,
+    initializeForm,
+    onSubmit: onUpdateSubmit,
+    onCancel: onUpdateCancel
   } = useDiaryUpdateForm(
     diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0,
     () => {
@@ -69,6 +70,11 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
       setIsEditMode(false);
     }
   );
+
+  // 일기 삭제 훅
+  const {
+    openDeleteModal,
+  } = useDiaryDelete(diaryData?.id ? Number(diaryData.id) : Number(diaryId) || 0);
 
   // 회고 데이터 로드
   React.useEffect(() => {
@@ -139,8 +145,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
 
   // 삭제 버튼 핸들러
   const handleDelete = () => {
-    console.log('삭제 버튼 클릭');
-    // TODO: 삭제 확인 모달 및 삭제 로직 구현
+    openDeleteModal();
   };
 
   // 회고 입력 핸들러 (훅 onSubmit 호출)
@@ -216,6 +221,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
                 size="medium"
                 className={styles.deleteButton}
                 onClick={handleDelete}
+                data-testid="delete-button"
               >
                 삭제
               </Button>

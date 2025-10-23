@@ -56,11 +56,28 @@ test.describe('일기 카드 링크 라우팅 테스트', () => {
   });
 
   test('삭제 버튼 클릭 시 페이지 이동하지 않아야 함', async ({ page }) => {
+    // 로그인 상태로 설정 (localStorage에 accessToken과 user 정보 추가)
+    await page.evaluate(() => {
+      localStorage.setItem('accessToken', 'test-token-123');
+      localStorage.setItem('user', JSON.stringify({
+        id: 'test-user',
+        email: 'test@example.com',
+        name: 'Test User'
+      }));
+    });
+
+    // 페이지 새로고침하여 로그인 상태 반영
+    await page.reload();
+    await page.waitForSelector('[data-testid="diaries-container"]', { timeout: 500 });
+
     const currentUrl = page.url();
 
     // 첫 번째 일기 카드의 삭제 버튼 클릭
-    const deleteButton = page.locator('[class*="diaryCard"]').first().locator('button[class*="closeButton"]');
+    const deleteButton = page.locator('[data-testid="diary-card"]').first().locator('[data-testid="delete-diary-button"]');
     await deleteButton.click();
+
+    // 삭제 확인 모달이 열리는지 확인
+    await page.waitForSelector('[data-testid="modal-overlay"]', { timeout: 2000 });
 
     // URL이 변경되지 않았는지 확인
     await expect(page).toHaveURL(currentUrl);

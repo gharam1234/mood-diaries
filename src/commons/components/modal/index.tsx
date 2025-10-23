@@ -33,6 +33,8 @@ export interface ModalProps {
   onConfirm?: () => void;
   /** 취소 버튼 클릭 콜백 */
   onCancel?: () => void;
+  /** 테스트 식별자 */
+  'data-testid'?: string;
 }
 
 /**
@@ -83,6 +85,7 @@ export const Modal: React.FC<ModalProps> = ({
   cancelText = '취소',
   onConfirm,
   onCancel,
+  'data-testid': dataTestId,
 }) => {
   // CSS 클래스 조합
   const modalClasses = [
@@ -133,7 +136,7 @@ export const Modal: React.FC<ModalProps> = ({
       aria-modal="true"
       aria-labelledby="modal-title"
       aria-describedby="modal-message"
-      data-testid={variant === 'info' ? 'success-modal' : 'error-modal'}
+      data-testid={dataTestId || (variant === 'info' ? 'success-modal' : 'error-modal')}
     >
         {/* 모달 콘텐츠 영역 */}
         <div className={styles.modalContent}>
@@ -154,6 +157,7 @@ export const Modal: React.FC<ModalProps> = ({
               size="medium"
               className={styles.modalButton}
               onClick={handleCancel}
+              data-testid="delete-cancel-button"
             >
               {cancelText}
             </Button>
@@ -164,6 +168,7 @@ export const Modal: React.FC<ModalProps> = ({
             size="medium"
             className={actions === 'single' ? styles.modalButtonSingle : styles.modalButton}
             onClick={handleConfirm}
+            data-testid="delete-confirm-button"
           >
             {confirmText}
           </Button>

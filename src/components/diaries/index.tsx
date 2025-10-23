@@ -14,6 +14,8 @@ import { useLinkRouting } from './hooks/index.link.routing.hook';
 import { useDiarySearch } from './hooks/index.search.hook';
 import { useDiaryFilter } from './hooks/index.filter.hook';
 import { useDiaryPagination } from './hooks/index.pagination.hook';
+import { useDiaryDelete } from './hooks/index.delete.hook';
+import { useAuth } from '@/commons/providers/auth/auth.provider';
 
 /**
  * 일기 카드 표시용 데이터 타입
@@ -80,7 +82,9 @@ const convertToCardData = (bindingData: BindingDiaryData): DiaryCardData => {
 const DiaryCard: React.FC<{ 
   diary: DiaryCardData; 
   onCardClick: (diaryId: number) => void;
-}> = ({ diary, onCardClick }) => {
+  onDeleteClick: (diaryId: number, diaryTitle: string) => void;
+  showDeleteButton: boolean;
+}> = ({ diary, onCardClick, onDeleteClick, showDeleteButton }) => {
   const emotionData = getEmotionData(diary.emotion);
   
   /**
@@ -97,6 +101,17 @@ const DiaryCard: React.FC<{
     }
     
     onCardClick(diary.id);
+  };
+
+  /**
+   * 삭제 버튼 클릭 핸들러
+   * 
+   * @description
+   * 삭제 버튼 클릭 시 삭제 확인 모달을 표시합니다.
+   */
+  const handleDeleteClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation(); // 카드 클릭 이벤트 전파 방지
+    onDeleteClick(diary.id, diary.title);
   };
   
   return (
@@ -115,16 +130,22 @@ const DiaryCard: React.FC<{
           className={styles.cardImg}
         />
         {/* 닫기 아이콘 - flexbox 방식으로 배치 */}
-        <div className={styles.closeButtonContainer}>
-          <button className={styles.closeButton}>
-            <Image
-              src="/icons/close_outline_light_m.svg"
-              alt="close"
-              width={24}
-              height={24}
-            />
-          </button>
-        </div>
+        {showDeleteButton && (
+          <div className={styles.closeButtonContainer}>
+            <button 
+              className={styles.closeButton}
+              onClick={handleDeleteClick}
+              data-testid="delete-diary-button"
+            >
+              <Image
+                src="/icons/close_outline_light_m.svg"
+                alt="close"
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
+        )}
       </div>
       
       {/* 카드 콘텐츠 */}
@@ -165,6 +186,10 @@ export const Diaries: React.FC = () => {
   const { filteredDiaries: searchFilteredDiaries, setSearchTerm } = useDiarySearch(diaries);
   // 필터 훅 사용
   const { filteredDiaries: filterFilteredDiaries, selectedFilter, setSelectedFilter, filterOptions } = useDiaryFilter(searchFilteredDiaries);
+  // 삭제 훅 사용
+  const { requestDeleteDiary } = useDiaryDelete();
+  // 인증 훅 사용
+  const { checkAuthStatus } = useAuth();
 
   // 검색어 입력값 상태 (컨트롤드 인풋)
   const [searchInput, setSearchInput] = React.useState('');
@@ -215,6 +240,14 @@ export const Diaries: React.FC = () => {
   const handleDiaryCardClick = (diaryId: number) => {
     navigateToDiaryDetail(diaryId);
   };
+
+  // 일기 삭제 핸들러
+  const handleDeleteDiary = (diaryId: number, diaryTitle: string) => {
+    requestDeleteDiary({ id: diaryId, title: diaryTitle });
+  };
+
+  // 삭제 버튼 표시 여부 확인 (로그인 상태에 따라)
+  const shouldShowDeleteButton = checkAuthStatus();
 
   return (
     <div className={styles.container} data-testid="diaries-container">
@@ -299,6 +332,8 @@ export const Diaries: React.FC = () => {
                 key={diary.id}
                 diary={convertToCardData(diary)}
                 onCardClick={handleDiaryCardClick}
+                onDeleteClick={handleDeleteDiary}
+                showDeleteButton={shouldShowDeleteButton}
               />
             ))
           )}
