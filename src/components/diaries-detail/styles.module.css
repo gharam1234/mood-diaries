@@ -14,7 +14,7 @@
 /* ====================================== */
 
 .titleSection {
-  width: 1168px;
+  width: 100%;
   height: 84px;
   
   margin-bottom: 24px; /* gap: 1168 * 24 */
@@ -97,7 +97,7 @@
 /* ====================================== */
 
 .contentSection {
-  width: 1168px;
+  width: 100%;
   /* height: 169px; */
   /* 고정시켜놓으면 안되고 그안에 컨텐트에 따라 조절되게 해놔야함 */
   /* margin-bottom: 24px; gap: 1168 * 24 */
@@ -167,7 +167,7 @@
 /* ====================================== */
 
 .detailFooter {
-  width: 1168px;
+  width: 100%;
   height: 56px;
   border-bottom: 1px solid var(--color-gray-black);
   display: flex;
@@ -194,7 +194,7 @@
 /* ====================================== */
 
 .retrospectInput {
-  width: 1168px;
+  width: 100%;
   height: 85px;
   margin-bottom: 16px; /* gap: 1168 * 16 */
 }
@@ -224,7 +224,7 @@
 /* ====================================== */
 
 .retrospectList {
-  width: 1168px;
+  width: 100%;
   border-radius: 16px;
   background-color: var(--color-background-primary);
   

@@ -333,7 +333,7 @@ export const DiariesDetail: React.FC<DiariesDetailProps> = ({ diaryId }) => {
             placeholder="회고를 남겨보세요."
             value={contentValue}
             onChange={(e) => form.setValue('content', e.target.value, { shouldValidate: true, shouldDirty: true, shouldTouch: true })}
-            style={{ width: '1081px' }}
+            style={{ width: '100%' }}
             data-testid="retrospect-input"
             disabled={isEditMode}
             // endButton={

@@ -92,6 +92,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
             width={1168}
             height={240}
             className={styles.bannerImage}
+            priority
           />
         </section>
       )}
